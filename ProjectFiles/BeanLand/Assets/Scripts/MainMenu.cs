@@ -34,6 +34,10 @@ public class MainMenu : MonoBehaviour
     [SerializeField] private string baseLevelSceneName = "BaseLevel";
     [SerializeField] private string levelsManifestUrl = "https://beanbox.netlify.app/Levels/levels.json";
     
+    [Header("Multiplayer")]
+    [SerializeField] private Button multiplayerButton;
+    [SerializeField] private string multiplayerSceneName = "MultiplayerMenu";
+    
     [Header("Debug")]
     [SerializeField] private List<string> availableLevels = new List<string>();
     [SerializeField] private int currentPage = 0;
@@ -101,6 +105,10 @@ public class MainMenu : MonoBehaviour
         
         if (rightArrowButton != null)
             rightArrowButton.onClick.AddListener(NextPage);
+        
+        // Setup multiplayer button
+        if (multiplayerButton != null)
+            multiplayerButton.onClick.AddListener(OpenMultiplayer);
         
         // Load available levels and setup cards
         StartCoroutine(LoadAvailableLevels());
@@ -472,6 +480,12 @@ public class MainMenu : MonoBehaviour
         
         // Load the base level scene
         UnityEngine.SceneManagement.SceneManager.LoadScene(baseLevelSceneName);
+    }
+    
+    public void OpenMultiplayer()
+    {
+        Log("MainMenu: Opening multiplayer menu");
+        UnityEngine.SceneManagement.SceneManager.LoadScene(multiplayerSceneName);
     }
     
     private void Log(string message)

@@ -17,6 +17,10 @@ public class PlayerController : MonoBehaviour
     public float gSmoothingFactor = 100f;
     public float gravityThresholdAngle = 45f; // Degrees threshold for gravity direction change
     
+    [Header("Multiplayer Settings")]
+    public bool useMultiplayerGravity = false;
+    public MultiplayerGravityController multiplayerGravityController;
+    
     [Header("Gyroscope Settings")]
     public bool useGyroscopeGravity = true;
     public bool showGravityDebugLine = true;
@@ -235,6 +239,13 @@ public class PlayerController : MonoBehaviour
     
     void HandleGravity()
     {
+        // Check if we should use multiplayer gravity
+        if (useMultiplayerGravity && multiplayerGravityController != null)
+        {
+            // Let multiplayer gravity controller handle gravity
+            return;
+        }
+        
         Vector3 targetGravityDirection = currentGravityDirection;
         
         if (useGyroscopeGravity)
@@ -1297,6 +1308,25 @@ public class PlayerController : MonoBehaviour
     public void FadeOutPlayer()
     {
         StartCoroutine(FadeOutEffect());
+    }
+    
+    // Multiplayer gravity methods
+    public void SetMultiplayerGravity(Vector3 direction)
+    {
+        if (multiplayerGravityController != null)
+        {
+            multiplayerGravityController.SetMultiplayerGravity(direction);
+        }
+    }
+    
+    public void SetMultiplayerGravityEnabled(bool enabled)
+    {
+        useMultiplayerGravity = enabled;
+        
+        if (multiplayerGravityController != null)
+        {
+            multiplayerGravityController.SetMultiplayerGravityEnabled(enabled);
+        }
     }
     
     private System.Collections.IEnumerator FadeOutEffect()

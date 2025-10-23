@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BeanBox Multiplayer</title>
+    <link rel="stylesheet" href="steampunk-style.css">
+    <style>
+        .multiplayer-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #2c1810, #1a0f0a);
+            color: #d4af37;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .multiplayer-panel {
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #d4af37;
+            border-radius: 10px;
+            padding: 30px;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+        }
+        
+        .pixel-title {
+            font-size: 2.5em;
+            color: #d4af37;
+            text-shadow: 2px 2px 0px #8b4513;
+            margin-bottom: 20px;
+        }
+        
+        .pixel-subtitle {
+            font-size: 1.2em;
+            color: #b8860b;
+            margin-bottom: 30px;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        .pixel-input {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.2em;
+            background: #1a0f0a;
+            border: 2px solid #d4af37;
+            border-radius: 5px;
+            color: #d4af37;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        
+        .pixel-input::placeholder {
+            color: #8b4513;
+            text-transform: none;
+        }
+        
+        .pixel-button {
+            background: linear-gradient(45deg, #d4af37, #b8860b);
+            border: 2px solid #8b4513;
+            color: #1a0f0a;
+            padding: 15px 30px;
+            font-size: 1.2em;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .pixel-button:hover {
+            background: linear-gradient(45deg, #b8860b, #d4af37);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+        
+        .pixel-button:disabled {
+            background: #666;
+            color: #999;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .status-text {
+            margin-top: 20px;
+            font-size: 1.1em;
+            min-height: 30px;
+        }
+        
+        .room-display {
+            background: rgba(212, 175, 55, 0.1);
+            border: 1px solid #d4af37;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 20px 0;
+            display: none;
+        }
+        
+        .room-code {
+            font-size: 2em;
+            font-weight: bold;
+            color: #d4af37;
+            letter-spacing: 3px;
+        }
+        
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid #d4af37;
+            color: #d4af37;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .back-button:hover {
+            background: rgba(212, 175, 55, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="multiplayer-container">
+        <a href="index.html" class="back-button">← Back to Game</a>
+        
+        <div class="multiplayer-panel">
+            <div class="pixel-title">BeanBox Multiplayer</div>
+            <div class="pixel-subtitle">Tilt together to control gravity!</div>
+            
+            <div id="room-creation" class="input-group">
+                <button id="create-room-btn" class="pixel-button">Create Room</button>
+            </div>
+            
+            <div id="room-joining" class="input-group">
+                <input type="text" id="room-code-input" class="pixel-input" placeholder="Enter 6-character room code" maxlength="6">
+                <button id="join-room-btn" class="pixel-button">Join Room</button>
+            </div>
+            
+            <div id="room-display" class="room-display">
+                <div class="pixel-subtitle">Room Code:</div>
+                <div id="room-code-display" class="room-code"></div>
+                <div id="player-count" class="pixel-subtitle">Players: 1</div>
+                <div id="gravity-status" class="pixel-subtitle">Tilt your phone to align gravity</div>
+                <button id="leave-room-btn" class="pixel-button">Leave Room</button>
+            </div>
+            
+            <div id="status-text" class="status-text"></div>
+        </div>
+    </div>
+
+    <script src="multiplayer-room-manager.js"></script>
+    <script>
+        // DOM elements
+        const createRoomBtn = document.getElementById('create-room-btn');
+        const joinRoomBtn = document.getElementById('join-room-btn');
+        const leaveRoomBtn = document.getElementById('leave-room-btn');
+        const roomCodeInput = document.getElementById('room-code-input');
+        const roomDisplay = document.getElementById('room-display');
+        const roomCodeDisplay = document.getElementById('room-code-display');
+        const playerCountDisplay = document.getElementById('player-count');
+        const gravityStatusDisplay = document.getElementById('gravity-status');
+        const statusText = document.getElementById('status-text');
+        
+        // Multiplayer manager
+        const roomManager = window.multiplayerRoomManager;
+        
+        // Event listeners
+        createRoomBtn.addEventListener('click', createRoom);
+        joinRoomBtn.addEventListener('click', joinRoom);
+        leaveRoomBtn.addEventListener('click', leaveRoom);
+        roomCodeInput.addEventListener('input', onRoomCodeInput);
+        
+        // Room code input handling
+        function onRoomCodeInput(event) {
+            const value = event.target.value.toUpperCase();
+            event.target.value = value;
+            
+            // Enable/disable join button
+            joinRoomBtn.disabled = value.length !== 6;
+        }
+        
+        // Create room
+        async function createRoom() {
+            try {
+                setStatus('Creating room...', '#d4af37');
+                createRoomBtn.disabled = true;
+                
+                // Generate room code
+                const roomCode = generateRoomCode();
+                
+                // Create room
+                await roomManager.createRoom(roomCode);
+                
+                // Show room display
+                showRoomDisplay(roomCode);
+                setStatus('Room created! Share the code with other players.', '#4CAF50');
+                
+            } catch (error) {
+                setStatus(`Error: ${error.message}`, '#f44336');
+                createRoomBtn.disabled = false;
+            }
+        }
+        
+        // Join room
+        async function joinRoom() {
+            try {
+                const roomCode = roomCodeInput.value.trim();
+                if (roomCode.length !== 6) {
+                    setStatus('Please enter a valid 6-character room code', '#f44336');
+                    return;
+                }
+                
+                setStatus('Joining room...', '#d4af37');
+                joinRoomBtn.disabled = true;
+                
+                // Join room
+                await roomManager.joinRoom(roomCode);
+                
+                // Show room display
+                showRoomDisplay(roomCode);
+                setStatus('Joined room! Tilt your phone to align gravity.', '#4CAF50');
+                
+            } catch (error) {
+                setStatus(`Error: ${error.message}`, '#f44336');
+                joinRoomBtn.disabled = false;
+            }
+        }
+        
+        // Leave room
+        function leaveRoom() {
+            roomManager.leaveRoom();
+            hideRoomDisplay();
+            setStatus('Left room', '#d4af37');
+        }
+        
+        // Show room display
+        function showRoomDisplay(roomCode) {
+            roomCodeDisplay.textContent = roomCode;
+            roomDisplay.style.display = 'block';
+            
+            // Hide creation/joining UI
+            document.getElementById('room-creation').style.display = 'none';
+            document.getElementById('room-joining').style.display = 'none';
+        }
+        
+        // Hide room display
+        function hideRoomDisplay() {
+            roomDisplay.style.display = 'none';
+            
+            // Show creation/joining UI
+            document.getElementById('room-creation').style.display = 'block';
+            document.getElementById('room-joining').style.display = 'block';
+            
+            // Reset inputs
+            roomCodeInput.value = '';
+            createRoomBtn.disabled = false;
+            joinRoomBtn.disabled = true;
+        }
+        
+        // Set status text
+        function setStatus(message, color = '#d4af37') {
+            statusText.textContent = message;
+            statusText.style.color = color;
+        }
+        
+        // Generate room code
+        function generateRoomCode() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let result = '';
+            for (let i = 0; i < 6; i++) {
+                result += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return result;
+        }
+        
+        // Update room status
+        function updateRoomStatus() {
+            if (!roomManager.isInRoom()) return;
+            
+            // Update player count
+            const playerCount = roomManager.getPlayerCount();
+            playerCountDisplay.textContent = `Players: ${playerCount}`;
+            
+            // Update gravity status
+            if (roomManager.isGravityAligned()) {
+                gravityStatusDisplay.textContent = 'Gravity Aligned! Working together!';
+                gravityStatusDisplay.style.color = '#4CAF50';
+            } else {
+                gravityStatusDisplay.textContent = 'Tilt your phone to align gravity with other players';
+                gravityStatusDisplay.style.color = '#FFC107';
+            }
+        }
+        
+        // Update room status every second
+        setInterval(updateRoomStatus, 1000);
+        
+        // Initialize
+        if (roomManager.isInRoom()) {
+            const roomCode = roomManager.getRoomCode();
+            showRoomDisplay(roomCode);
+            setStatus('Connected to room', '#4CAF50');
+        }
+    </script>
+</body>
+</html>

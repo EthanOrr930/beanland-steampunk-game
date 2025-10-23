@@ -56,11 +56,16 @@
     <Compile Include="Assets\Scripts\Steam.cs" />
     <Compile Include="Assets\Scripts\AnimatedSprite.cs" />
     <Compile Include="Assets\Scripts\Wall.cs" />
+    <Compile Include="Assets\Scripts\MultiplayerManager.cs" />
     <Compile Include="Assets\Scripts\NoDashZone.cs" />
+    <Compile Include="Assets\Scripts\MultiplayerMenu.cs" />
     <Compile Include="Assets\Scripts\MainMenu.cs" />
+    <Compile Include="Assets\Scripts\MultiplayerLevelManager.cs" />
     <Compile Include="Assets\Scripts\PortraitGameSetup.cs" />
     <Compile Include="Assets\Scripts\AnimatedSpriteSprites.cs" />
     <Compile Include="Assets\Scripts\LevelLoader.cs" />
+    <Compile Include="Assets\Scripts\MultiplayerGravityController.cs" />
+    <Compile Include="Assets\Scripts\MultiplayerUI.cs" />
     <Compile Include="Assets\Scripts\ParallaxBackground.cs" />
     <Compile Include="Assets\Scripts\OrientationLock.cs" />
     <Compile Include="Assets\Scripts\ButtonController.cs" />
