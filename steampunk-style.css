@@ -419,7 +419,6 @@ body {
   font-weight: 700;
   color: var(--coffee-brown);
   margin-bottom: 15px;
-  text-shadow: 1px 1px 3px rgba(139, 69, 19, 0.15);
   letter-spacing: 1.5px;
   text-transform: uppercase;
 }
@@ -557,18 +556,11 @@ body {
   }
 }
 
-/* Desktop-specific steampunk styling */
+/* Desktop-specific clean styling */
 @media (min-width: 769px) {
   .mobile-only-overlay .mobile-message {
-    background: linear-gradient(135deg, var(--dark-brass), var(--brass));
-    border: 3px solid var(--gold);
-    box-shadow: 
-      0 0 30px rgba(255, 215, 0, 0.4),
-      inset 0 0 30px rgba(0, 0, 0, 0.3);
-  }
-  
-  .pixel-title {
-    color: var(--gold);
-    text-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
+    background: #ffffff;
+    border: 1px solid #e0e0e0;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
   }
 }
