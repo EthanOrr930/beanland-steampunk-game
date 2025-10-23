@@ -12,6 +12,148 @@
     <link rel="stylesheet" href="steampunk-style.css">
     <link rel="stylesheet" href="TemplateData/style.css">
     <script src="multiplayer-room-manager.js"></script>
+    <script>
+      // Mobile Console for debugging
+      window.mobileConsole = {
+        logs: [],
+        enabled: true,
+        log: function(message, type = 'log') {
+          if (!this.enabled) return;
+          const timestamp = new Date().toLocaleTimeString();
+          const logEntry = `[${timestamp}] ${type.toUpperCase()}: ${message}`;
+          this.logs.push(logEntry);
+          console.log(logEntry);
+          
+          // Update mobile console display
+          this.updateDisplay();
+        },
+        updateDisplay: function() {
+          let consoleDiv = document.getElementById('mobile-console');
+          if (!consoleDiv) {
+            consoleDiv = document.createElement('div');
+            consoleDiv.id = 'mobile-console';
+            consoleDiv.style.cssText = `
+              position: fixed;
+              top: 0;
+              left: 0;
+              width: 100%;
+              height: 200px;
+              background: rgba(0, 0, 0, 0.9);
+              color: #00ff00;
+              font-family: 'Courier New', monospace;
+              font-size: 12px;
+              padding: 10px;
+              overflow-y: auto;
+              z-index: 9999;
+              display: none;
+              border-bottom: 2px solid #00ff00;
+            `;
+            document.body.appendChild(consoleDiv);
+          }
+          
+          // Show last 20 logs
+          const recentLogs = this.logs.slice(-20);
+          consoleDiv.innerHTML = recentLogs.join('<br>');
+        },
+        show: function() {
+          const consoleDiv = document.getElementById('mobile-console');
+          if (consoleDiv) {
+            consoleDiv.style.display = 'block';
+          }
+        },
+        hide: function() {
+          const consoleDiv = document.getElementById('mobile-console');
+          if (consoleDiv) {
+            consoleDiv.style.display = 'none';
+          }
+        },
+        toggle: function() {
+          const consoleDiv = document.getElementById('mobile-console');
+          if (consoleDiv) {
+            consoleDiv.style.display = consoleDiv.style.display === 'none' ? 'block' : 'none';
+          }
+        },
+        clear: function() {
+          this.logs = [];
+          this.updateDisplay();
+        }
+      };
+      
+      // Override console methods for mobile
+      const originalLog = console.log;
+      const originalError = console.error;
+      const originalWarn = console.warn;
+      
+      console.log = function(...args) {
+        originalLog.apply(console, args);
+        window.mobileConsole.log(args.join(' '), 'log');
+      };
+      
+      console.error = function(...args) {
+        originalError.apply(console, args);
+        window.mobileConsole.log(args.join(' '), 'error');
+      };
+      
+      console.warn = function(...args) {
+        originalWarn.apply(console, args);
+        window.mobileConsole.log(args.join(' '), 'warn');
+      };
+      
+      // Add toggle button
+      document.addEventListener('DOMContentLoaded', function() {
+        const toggleButton = document.createElement('button');
+        toggleButton.innerHTML = '📱';
+        toggleButton.style.cssText = `
+          position: fixed;
+          top: 10px;
+          right: 10px;
+          width: 40px;
+          height: 40px;
+          background: rgba(0, 0, 0, 0.8);
+          color: #00ff00;
+          border: 2px solid #00ff00;
+          border-radius: 50%;
+          font-size: 16px;
+          cursor: pointer;
+          z-index: 10000;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        `;
+        toggleButton.onclick = function() {
+          window.mobileConsole.toggle();
+        };
+        document.body.appendChild(toggleButton);
+        
+        // Add clear button
+        const clearButton = document.createElement('button');
+        clearButton.innerHTML = '🗑️';
+        clearButton.style.cssText = `
+          position: fixed;
+          top: 60px;
+          right: 10px;
+          width: 40px;
+          height: 40px;
+          background: rgba(0, 0, 0, 0.8);
+          color: #ff0000;
+          border: 2px solid #ff0000;
+          border-radius: 50%;
+          font-size: 16px;
+          cursor: pointer;
+          z-index: 10000;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        `;
+        clearButton.onclick = function() {
+          window.mobileConsole.clear();
+        };
+        document.body.appendChild(clearButton);
+      });
+      
+      // Log initial message
+      window.mobileConsole.log('Mobile Console Enabled - Tap 📱 to toggle');
+    </script>
   </head>
   <body>
     <!-- Clean minimal design - decorative elements removed -->
