@@ -12,148 +12,76 @@
     <link rel="stylesheet" href="steampunk-style.css">
     <link rel="stylesheet" href="TemplateData/style.css">
     <script src="multiplayer-room-manager.js"></script>
-    <script>
-      // Mobile Console for debugging
-      window.mobileConsole = {
-        logs: [],
-        enabled: true,
-        log: function(message, type = 'log') {
-          if (!this.enabled) return;
-          const timestamp = new Date().toLocaleTimeString();
-          const logEntry = `[${timestamp}] ${type.toUpperCase()}: ${message}`;
-          this.logs.push(logEntry);
-          console.log(logEntry);
-          
-          // Update mobile console display
-          this.updateDisplay();
-        },
-        updateDisplay: function() {
-          let consoleDiv = document.getElementById('mobile-console');
-          if (!consoleDiv) {
-            consoleDiv = document.createElement('div');
-            consoleDiv.id = 'mobile-console';
-            consoleDiv.style.cssText = `
-              position: fixed;
-              top: 0;
-              left: 0;
-              width: 100%;
-              height: 200px;
-              background: rgba(0, 0, 0, 0.9);
-              color: #00ff00;
-              font-family: 'Courier New', monospace;
-              font-size: 12px;
-              padding: 10px;
-              overflow-y: auto;
-              z-index: 9999;
-              display: none;
-              border-bottom: 2px solid #00ff00;
-            `;
-            document.body.appendChild(consoleDiv);
-          }
-          
-          // Show last 20 logs
-          const recentLogs = this.logs.slice(-20);
-          consoleDiv.innerHTML = recentLogs.join('<br>');
-        },
-        show: function() {
-          const consoleDiv = document.getElementById('mobile-console');
-          if (consoleDiv) {
-            consoleDiv.style.display = 'block';
-          }
-        },
-        hide: function() {
-          const consoleDiv = document.getElementById('mobile-console');
-          if (consoleDiv) {
-            consoleDiv.style.display = 'none';
-          }
-        },
-        toggle: function() {
-          const consoleDiv = document.getElementById('mobile-console');
-          if (consoleDiv) {
-            consoleDiv.style.display = consoleDiv.style.display === 'none' ? 'block' : 'none';
-          }
-        },
-        clear: function() {
-          this.logs = [];
-          this.updateDisplay();
-        }
-      };
+    
+    <!-- Mobile Debug Console Styles -->
+    <style>
+      #mobile-debug-console {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.9);
+        color: #00ff00;
+        font-family: 'Courier New', monospace;
+        font-size: 12px;
+        z-index: 9999;
+        display: none;
+        overflow-y: auto;
+        padding: 10px;
+        box-sizing: border-box;
+      }
       
-      // Override console methods for mobile
-      const originalLog = console.log;
-      const originalError = console.error;
-      const originalWarn = console.warn;
+      #mobile-debug-console.visible {
+        display: block;
+      }
       
-      console.log = function(...args) {
-        originalLog.apply(console, args);
-        window.mobileConsole.log(args.join(' '), 'log');
-      };
+      #mobile-debug-console .debug-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+        padding-bottom: 5px;
+        border-bottom: 1px solid #00ff00;
+      }
       
-      console.error = function(...args) {
-        originalError.apply(console, args);
-        window.mobileConsole.log(args.join(' '), 'error');
-      };
+      #mobile-debug-console .debug-close {
+        background: #ff0000;
+        color: white;
+        border: none;
+        padding: 5px 10px;
+        cursor: pointer;
+        font-size: 14px;
+      }
       
-      console.warn = function(...args) {
-        originalWarn.apply(console, args);
-        window.mobileConsole.log(args.join(' '), 'warn');
-      };
+      #mobile-debug-console .debug-content {
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        max-height: calc(100vh - 60px);
+        overflow-y: auto;
+      }
       
-      // Add toggle button
-      document.addEventListener('DOMContentLoaded', function() {
-        const toggleButton = document.createElement('button');
-        toggleButton.innerHTML = '📱';
-        toggleButton.style.cssText = `
-          position: fixed;
-          top: 10px;
-          right: 10px;
-          width: 40px;
-          height: 40px;
-          background: rgba(0, 0, 0, 0.8);
-          color: #00ff00;
-          border: 2px solid #00ff00;
-          border-radius: 50%;
-          font-size: 16px;
-          cursor: pointer;
-          z-index: 10000;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        `;
-        toggleButton.onclick = function() {
-          window.mobileConsole.toggle();
-        };
-        document.body.appendChild(toggleButton);
-        
-        // Add clear button
-        const clearButton = document.createElement('button');
-        clearButton.innerHTML = '🗑️';
-        clearButton.style.cssText = `
-          position: fixed;
-          top: 60px;
-          right: 10px;
-          width: 40px;
-          height: 40px;
-          background: rgba(0, 0, 0, 0.8);
-          color: #ff0000;
-          border: 2px solid #ff0000;
-          border-radius: 50%;
-          font-size: 16px;
-          cursor: pointer;
-          z-index: 10000;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        `;
-        clearButton.onclick = function() {
-          window.mobileConsole.clear();
-        };
-        document.body.appendChild(clearButton);
-      });
+      #mobile-debug-console .debug-line {
+        margin: 2px 0;
+        line-height: 1.4;
+      }
       
-      // Log initial message
-      window.mobileConsole.log('Mobile Console Enabled - Tap 📱 to toggle');
-    </script>
+      #mobile-debug-console .debug-error {
+        color: #ff0000;
+      }
+      
+      #mobile-debug-console .debug-warn {
+        color: #ffff00;
+      }
+      
+      #mobile-debug-console .debug-info {
+        color: #00ffff;
+      }
+      
+      #mobile-debug-console .debug-log {
+        color: #00ff00;
+      }
+    </style>
   </head>
   <body>
     <!-- Clean minimal design - decorative elements removed -->
@@ -211,6 +139,18 @@
         <div id="unity-logo-title-footer"></div>
         <div id="unity-fullscreen-button" style="display: none;"></div>
         <div id="unity-build-title">BeanBox</div>
+      </div>
+    </div>
+    
+    <!-- Mobile Debug Console -->
+    <div id="mobile-debug-console">
+      <div class="debug-header">
+        <div>Mobile Debug Console</div>
+        <button class="debug-close" onclick="toggleMobileDebugConsole()">Close</button>
+      </div>
+      <div class="debug-content" id="debug-content">
+        <div class="debug-line debug-info">Mobile Debug Console Ready</div>
+        <div class="debug-line debug-info">Tap anywhere on the screen to toggle this console</div>
       </div>
     </div>
     <script>
@@ -566,6 +506,110 @@
         }, 1000);
       }
 
+      // Mobile Debug Console Functions
+      let mobileDebugConsoleVisible = false;
+      let debugLogs = [];
+      let originalConsole = {
+        log: console.log,
+        error: console.error,
+        warn: console.warn,
+        info: console.info
+      };
+
+      function toggleMobileDebugConsole() {
+        const console = document.getElementById('mobile-debug-console');
+        if (console) {
+          mobileDebugConsoleVisible = !mobileDebugConsoleVisible;
+          if (mobileDebugConsoleVisible) {
+            console.classList.add('visible');
+            updateDebugConsole();
+          } else {
+            console.classList.remove('visible');
+          }
+        }
+      }
+
+      function addDebugLog(message, type = 'log') {
+        const timestamp = new Date().toLocaleTimeString();
+        const logEntry = {
+          message: `[${timestamp}] ${message}`,
+          type: type
+        };
+        debugLogs.push(logEntry);
+        
+        // Keep only last 100 logs
+        if (debugLogs.length > 100) {
+          debugLogs.shift();
+        }
+        
+        if (mobileDebugConsoleVisible) {
+          updateDebugConsole();
+        }
+      }
+
+      function updateDebugConsole() {
+        const content = document.getElementById('debug-content');
+        if (content) {
+          content.innerHTML = debugLogs.map(log => 
+            `<div class="debug-line debug-${log.type}">${log.message}</div>`
+          ).join('');
+          content.scrollTop = content.scrollHeight;
+        }
+      }
+
+      function setupMobileDebugConsole() {
+        if (isMobile) {
+          // Override console methods to capture logs
+          console.log = function(...args) {
+            originalConsole.log.apply(console, args);
+            addDebugLog(args.join(' '), 'log');
+          };
+          
+          console.error = function(...args) {
+            originalConsole.error.apply(console, args);
+            addDebugLog(args.join(' '), 'error');
+          };
+          
+          console.warn = function(...args) {
+            originalConsole.warn.apply(console, args);
+            addDebugLog(args.join(' '), 'warn');
+          };
+          
+          console.info = function(...args) {
+            originalConsole.info.apply(console, args);
+            addDebugLog(args.join(' '), 'info');
+          };
+
+          // Add tap listener to toggle console
+          document.addEventListener('touchstart', function(e) {
+            // Triple tap to toggle console
+            if (e.touches.length === 1) {
+              const now = Date.now();
+              if (!window.lastTapTime) window.lastTapTime = 0;
+              if (now - window.lastTapTime < 500) {
+                window.tapCount = (window.tapCount || 0) + 1;
+                if (window.tapCount >= 3) {
+                  toggleMobileDebugConsole();
+                  window.tapCount = 0;
+                }
+              } else {
+                window.tapCount = 1;
+              }
+              window.lastTapTime = now;
+            }
+          });
+
+          // Add keyboard shortcut for desktop testing
+          document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.shiftKey && e.key === 'D') {
+              toggleMobileDebugConsole();
+            }
+          });
+
+          addDebugLog('Mobile Debug Console initialized - Triple tap to toggle', 'info');
+        }
+      }
+
       // Check if device is mobile and handle desktop overlay
       function handleMobileOnlyDisplay() {
         const mobileOnlyOverlay = document.getElementById('mobile-only-overlay');
@@ -644,6 +688,9 @@
 
       // Handle mobile-only display
       handleMobileOnlyDisplay();
+      
+      // Setup mobile debug console
+      setupMobileDebugConsole();
       
       // Lock orientation to portrait on mobile immediately
       if (isMobile) {
