@@ -1,0 +1,37 @@
+# Netlify headers for Unity WebGL files (Gzip compressed build)
+
+# CORS and general headers - MUST come first
+/*
+  Access-Control-Allow-Origin: *
+  Access-Control-Allow-Methods: GET, POST, OPTIONS
+  Access-Control-Allow-Headers: *
+  X-Content-Type-Options: nosniff
+
+# Unity WebGL Gzip compressed JavaScript files
+/Build/*.js.gz
+  Content-Type: application/javascript; charset=utf-8
+  Content-Encoding: gzip
+  Cache-Control: public, max-age=31536000, immutable
+
+# Unity WebGL Gzip compressed WASM files
+/Build/*.wasm.gz
+  Content-Type: application/wasm
+  Content-Encoding: gzip
+  Cache-Control: public, max-age=31536000, immutable
+
+# Unity WebGL Gzip compressed data files
+/Build/*.data.gz
+  Content-Type: application/octet-stream
+  Content-Encoding: gzip
+  Cache-Control: public, max-age=31536000, immutable
+
+# Unity WebGL framework Gzip compressed files
+/Build/*.framework.js.gz
+  Content-Type: application/javascript; charset=utf-8
+  Content-Encoding: gzip
+  Cache-Control: public, max-age=31536000, immutable
+
+# Level data files
+/Levels/*.json
+  Content-Type: application/json
+  Cache-Control: public, max-age=3600

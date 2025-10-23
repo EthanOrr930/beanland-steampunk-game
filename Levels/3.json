@@ -1,0 +1,130 @@
+{
+    "levelName": "3",
+    "version": "1.0",
+    "prefabs": [
+        {
+            "prefabName": "Platform_2 (1)",
+            "prefabPath": "Platform_2",
+            "position": {
+                "x": 6.05988073348999,
+                "y": 0.9325002431869507,
+                "z": 0.0
+            },
+            "rotation": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "scale": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            }
+        },
+        {
+            "prefabName": "NoDashZone (1)",
+            "prefabPath": "NoDashZone",
+            "position": {
+                "x": 3.0761001110076906,
+                "y": 3.5,
+                "z": 0.0
+            },
+            "rotation": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "scale": {
+                "x": 5.545428276062012,
+                "y": 2.333650827407837,
+                "z": 1.0
+            }
+        },
+        {
+            "prefabName": "EspressoMachine",
+            "prefabPath": "EspressoMachine",
+            "position": {
+                "x": 5.968908309936523,
+                "y": -0.05000000074505806,
+                "z": 0.0
+            },
+            "rotation": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "scale": {
+                "x": 0.5,
+                "y": 0.5,
+                "z": 0.5
+            }
+        },
+        {
+            "prefabName": "Platform_2",
+            "prefabPath": "Platform_2",
+            "position": {
+                "x": 6.05988073348999,
+                "y": -0.977916955947876,
+                "z": 0.0
+            },
+            "rotation": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "scale": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            }
+        },
+        {
+            "prefabName": "NoDashZone",
+            "prefabPath": "NoDashZone",
+            "position": {
+                "x": 3.0761001110076906,
+                "y": -3.732300043106079,
+                "z": 0.0
+            },
+            "rotation": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "scale": {
+                "x": 5.545428276062012,
+                "y": 2.333650827407837,
+                "z": 1.0
+            }
+        }
+    ],
+    "transforms": [
+        {
+            "objectName": "Player",
+            "objectTag": "Player",
+            "position": {
+                "x": 2.799999952316284,
+                "y": -4.429999828338623,
+                "z": 0.0
+            },
+            "rotation": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "scale": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            }
+        }
+    ],
+    "buttonConnections": [],
+    "springJoints": [],
+    "playerSettings": {
+        "maxLaunches": 10,
+        "currentLaunches": 0,
+        "infiniteDashes": true
+    },
+    "exportTimestamp": 1759880916
+}

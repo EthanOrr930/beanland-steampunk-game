@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>BeanBox</title>
+    <link rel="shortcut icon" href="TemplateData/favicon.ico">
+    <link rel="stylesheet" href="steampunk-style.css">
+    <link rel="stylesheet" href="TemplateData/style.css">
+  </head>
+  <body>
+    <!-- Steampunk decorative gears -->
+    <div class="gear-decoration gear-1"></div>
+    <div class="gear-decoration gear-2"></div>
+    <div class="gear-decoration gear-3"></div>
+    
+    
+    <!-- Mobile permission prompt -->
+    <div id="mobile-permission-overlay" class="mobile-permission-overlay">
+      <div class="permission-message">
+        <div class="permission-title">BeanBox Needs Orientation Access</div>
+        <div class="permission-subtitle"></div>
+        <div class="permission-icon">📱</div>
+        <div class="permission-text">This game uses your phone's orientation to control gravity.</div>
+        <div class="permission-text">Please allow access when prompted.</div>
+        <button id="permission-button" class="permission-button">Enable Orientation Control</button>
+        <div class="permission-footer">The game will start after permission is granted.</div>
+        <div id="loading-indicator" class="loading-indicator" style="display: none;">
+          <div class="loading-text" id="loading-text">Loading game...</div>
+          <div class="loading-bar">
+            <div id="permission-progress-bar" class="loading-progress"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Mobile-only message for desktop users -->
+    <div id="mobile-only-overlay" class="mobile-only-overlay">
+      <div class="mobile-message">
+                <div class="pixel-title">BeanBox</div>
+                <div class="pixel-subtitle">Coffee Bean's Journey to the Espresso Machine</div>
+        <div class="mobile-icon-container">
+          <div class="mobile-icon">📱</div>
+        </div>
+        <div class="pixel-text">Hey! You need to go back to your phone!</div>
+        <div class="pixel-text">Help our little coffee bean reach the espresso machine!</div>
+        <div class="pixel-text">This puzzle game is designed for mobile devices.</div>
+        <div class="pixel-text">Tilt your phone's orientation to control gravity and guide the bean!</div>
+        <div class="qr-placeholder">
+                  <div class="qr-text">Scan QR code with your phone</div>
+          <div class="qr-code" id="qr-code"></div>
+          <div class="qr-subtitle">Or manually type the URL</div>
+        </div>
+      </div>
+    </div>
+    
+    <div id="unity-container" class="unity-desktop">
+      <canvas id="unity-canvas" width=600 height=960 tabindex="-1"></canvas>
+      <div id="unity-loading-bar">
+        <div id="unity-logo"></div>
+        <div id="unity-progress-bar-empty">
+          <div id="unity-progress-bar-full"></div>
+        </div>
+      </div>
+      <div id="unity-warning"> </div>
+      <div id="unity-footer">
+        <div id="unity-logo-title-footer"></div>
+        <div id="unity-fullscreen-button" style="display: none;"></div>
+        <div id="unity-build-title">BeanBox</div>
+      </div>
+    </div>
+    <script>
+      var canvas = document.querySelector("#unity-canvas");
+      var gameInstance = null;
+      var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+      // Device orientation and motion detection variables
+      var currentOrientation = 0;
+      var currentMotion = { x: 0, y: 0, z: 0 };
+      var motionPermissionGranted = false;
+
+      // Shows a temporary message banner/ribbon for a few seconds, or
+      // a permanent error message on top of the canvas if type=='error'.
+      function unityShowBanner(msg, type) {
+        var warningBanner = document.querySelector("#unity-warning");
+        function updateBannerVisibility() {
+          warningBanner.style.display = warningBanner.children.length ? 'block' : 'none';
+        }
+        var div = document.createElement('div');
+        div.innerHTML = msg;
+        warningBanner.appendChild(div);
+        if (type == 'error') div.style = 'background: red; padding: 10px;';
+        else {
+          if (type == 'warning') div.style = 'background: yellow; padding: 10px;';
+          setTimeout(function() {
+            warningBanner.removeChild(div);
+            updateBannerVisibility();
+          }, 5000);
+        }
+        updateBannerVisibility();
+      }
+
+      // Device Orientation Detection
+      function getDeviceOrientation() {
+        if (typeof screen !== 'undefined' && screen.orientation) {
+          return screen.orientation.angle;
+        } else if (typeof window !== 'undefined' && window.orientation !== undefined) {
+          return window.orientation;
+        }
+        return 0;
+      }
+
+      // Send orientation data to Unity
+      function sendOrientationToUnity() {
+        currentOrientation = getDeviceOrientation();
+        
+        if (gameInstance && gameInstance.SendMessage) {
+          console.log('Sending orientation data to Unity:', currentOrientation);
+          gameInstance.SendMessage('Orientation Handler', 'SetOrientationData', currentOrientation);
+        }
+      }
+
+      // Send motion data to Unity (this is the gravity vector)
+      var lastMotionLogTime = 0;
+      function sendMotionToUnity(x, y, z) {
+        currentMotion = { x: x, y: y, z: z };
+        
+        if (gameInstance && gameInstance.SendMessage) {
+          // Target the correct GameObject name: "Orientation Handler"
+          const motionString = `${x},${y},${z}`;
+          
+          // Log occasionally (every 2 seconds) to avoid spam
+          const now = Date.now();
+          if (now - lastMotionLogTime > 2000) {
+            console.log('[GRAVITY] Phone tilt detected - controlling gravity:', motionString);
+            lastMotionLogTime = now;
+          }
+          
+          // Send to Unity
+          gameInstance.SendMessage('Orientation Handler', 'SetMotionDataString', motionString);
+        } else {
+          console.log('[GRAVITY] ERROR: No Unity instance available');
+        }
+      }
+
+
+      // Lock screen orientation to portrait
+      function lockOrientationToPortrait() {
+        console.log('Attempting to lock orientation to portrait...');
+        
+        if (screen.orientation && screen.orientation.lock) {
+          screen.orientation.lock('portrait').then(function() {
+            console.log('Orientation locked to portrait');
+          }).catch(function(error) {
+            console.log('Could not lock orientation:', error);
+          });
+        } else if (screen.lockOrientation) {
+          // Fallback for older browsers
+          screen.lockOrientation('portrait');
+        } else if (screen.mozLockOrientation) {
+          screen.mozLockOrientation('portrait');
+        } else if (screen.msLockOrientation) {
+          screen.msLockOrientation('portrait');
+        } else {
+          console.log('Orientation lock not supported');
+        }
+      }
+
+      // Request permission for motion data (required for iOS 13+)
+      function requestMotionPermission() {
+        console.log('Requesting motion permission...');
+        
+        // Lock orientation to portrait first
+        lockOrientationToPortrait();
+        
+        if (typeof DeviceMotionEvent !== 'undefined' && typeof DeviceMotionEvent.requestPermission === 'function') {
+          console.log('DeviceMotionEvent.requestPermission available');
+          DeviceMotionEvent.requestPermission().then(function(response) {
+            console.log('Permission response:', response);
+            if (response === 'granted') {
+              motionPermissionGranted = true;
+              startMotionDetection();
+            } else {
+              console.log('Motion permission denied');
+              // Show a message to user about enabling motion
+              alert('Orientation permission denied. Please enable motion and orientation access in your browser settings to play the game!');
+            }
+          }).catch(function(error) {
+            console.error('Permission request failed:', error);
+          });
+        } else {
+          console.log('DeviceMotionEvent.requestPermission not available, starting detection directly');
+          motionPermissionGranted = true;
+          startMotionDetection();
+        }
+      }
+      
+      // Request permission and then start loading Unity
+      function requestMotionPermissionThenLoad() {
+        console.log('Requesting motion permission, then will load Unity...');
+        
+        // Lock orientation to portrait first
+        lockOrientationToPortrait();
+        
+        if (typeof DeviceMotionEvent !== 'undefined' && typeof DeviceMotionEvent.requestPermission === 'function') {
+          console.log('DeviceMotionEvent.requestPermission available');
+          DeviceMotionEvent.requestPermission().then(function(response) {
+            console.log('Permission response:', response);
+            if (response === 'granted') {
+              motionPermissionGranted = true;
+              startMotionDetection();
+              // Start loading Unity after permission granted
+              startLoadingUnity();
+            } else {
+              console.log('Motion permission denied');
+              // Show button again if permission denied
+              const permissionButton = document.getElementById('permission-button');
+              if (permissionButton) {
+                permissionButton.style.display = 'block';
+              }
+              alert('Orientation permission denied. Please enable motion and orientation access in your browser settings to play the game!');
+            }
+          }).catch(function(error) {
+            console.error('Permission request failed:', error);
+            // Show button again on error
+            const permissionButton = document.getElementById('permission-button');
+            if (permissionButton) {
+              permissionButton.style.display = 'block';
+            }
+          });
+        } else {
+          console.log('DeviceMotionEvent.requestPermission not available, starting detection and loading directly');
+          motionPermissionGranted = true;
+          startMotionDetection();
+          // Start loading Unity
+          startLoadingUnity();
+        }
+      }
+      
+      // Show game with fullscreen button after permission is granted
+      function showGameWithFullscreenButton() {
+        const mobilePermissionOverlay = document.getElementById('mobile-permission-overlay');
+        const unityContainer = document.getElementById('unity-container');
+        
+        // Hide permission overlay
+        if (mobilePermissionOverlay) {
+          mobilePermissionOverlay.style.display = 'none';
+        }
+        
+        // Show Unity container
+        if (unityContainer) {
+          unityContainer.style.display = 'block';
+          unityContainer.classList.add("unity-mobile");
+        }
+        
+        // Show fullscreen button
+        const fullscreenButton = document.querySelector("#unity-fullscreen-button");
+        if (fullscreenButton) {
+          fullscreenButton.style.display = 'block';
+          fullscreenButton.style.position = 'fixed';
+          fullscreenButton.style.top = '20px';
+          fullscreenButton.style.right = '20px';
+          fullscreenButton.style.zIndex = '1000';
+          fullscreenButton.style.background = 'rgba(139, 69, 19, 0.8)';
+          fullscreenButton.style.border = '2px solid var(--coffee-brown)';
+          fullscreenButton.style.borderRadius = '50%';
+          fullscreenButton.style.width = '50px';
+          fullscreenButton.style.height = '50px';
+          fullscreenButton.style.cursor = 'pointer';
+          fullscreenButton.style.display = 'flex';
+          fullscreenButton.style.alignItems = 'center';
+          fullscreenButton.style.justifyContent = 'center';
+          fullscreenButton.style.fontSize = '20px';
+          fullscreenButton.style.color = 'white';
+          fullscreenButton.innerHTML = '⛶';
+          fullscreenButton.title = 'Tap to enter fullscreen';
+        }
+        
+        // Debug overlay is now hidden in CSS
+      }
+
+      // Set up permission button immediately when page loads
+      function setupPermissionButton() {
+        const permissionButton = document.getElementById('permission-button');
+        if (permissionButton && isMobile) {
+          permissionButton.onclick = function() {
+            console.log('Permission button clicked');
+            requestMotionPermissionThenLoad();
+          };
+        }
+      }
+
+      // Start motion detection
+      function startMotionDetection() {
+        if (!motionPermissionGranted) return;
+        
+        console.log('[GRAVITY] Motion detection started - tilt your phone to control gravity!');
+        
+        window.addEventListener('devicemotion', function(event) {
+          // Use accelerationIncludingGravity for true gravity vector
+          // This includes the gravitational acceleration (9.81 m/s²)
+          if (event.accelerationIncludingGravity) {
+            const gravityX = event.accelerationIncludingGravity.x || 0;
+            const gravityY = event.accelerationIncludingGravity.y || 0;
+            const gravityZ = event.accelerationIncludingGravity.z || 0;
+            
+            sendMotionToUnity(gravityX, gravityY, gravityZ);
+          } else if (event.acceleration) {
+            // Fallback to regular acceleration
+            const gravityX = event.acceleration.x || 0;
+            const gravityY = event.acceleration.y || 0;
+            const gravityZ = event.acceleration.z || 0;
+            
+            sendMotionToUnity(gravityX, gravityY, gravityZ);
+          }
+        });
+        
+        console.log('[GRAVITY] Device motion listener active!');
+      }
+
+      // Enter fullscreen directly when permission is granted
+      function enterFullscreenDirectly() {
+        if (isMobile) {
+          console.log('Entering fullscreen directly...');
+          
+          // Hide permission overlay
+          const mobilePermissionOverlay = document.getElementById('mobile-permission-overlay');
+          if (mobilePermissionOverlay) {
+            mobilePermissionOverlay.style.display = 'none';
+          }
+          
+          // Show Unity container and prepare for fullscreen
+          const unityContainer = document.getElementById('unity-container');
+          if (unityContainer) {
+            unityContainer.style.display = 'block';
+            unityContainer.classList.add("unity-mobile");
+          }
+          
+          // Hide UI elements for clean fullscreen experience
+          
+          const fullscreenButton = document.querySelector("#unity-fullscreen-button");
+          if (fullscreenButton) {
+            fullscreenButton.style.display = 'none';
+          }
+          
+          const footer = document.querySelector("#unity-footer");
+          if (footer) {
+            footer.style.display = 'none';
+          }
+          
+          // Try to enter fullscreen immediately
+          setTimeout(function() {
+            if (document.documentElement.requestFullscreen) {
+              document.documentElement.requestFullscreen().catch(function(err) {
+                console.log('Fullscreen not supported or blocked:', err);
+              });
+            } else if (document.documentElement.webkitRequestFullscreen) {
+              document.documentElement.webkitRequestFullscreen();
+            } else if (document.documentElement.mozRequestFullScreen) {
+              document.documentElement.mozRequestFullScreen();
+            }
+          }, 500); // Small delay to ensure Unity is ready
+        }
+      }
+
+      // Enter fullscreen mode (for manual fullscreen button)
+      function enterFullscreen() {
+        if (isMobile) {
+          // Hide UI elements for clean mobile experience
+          const container = document.querySelector("#unity-container");
+          if (container) {
+            container.classList.add("unity-mobile");
+          }
+          
+          // Hide footer on mobile
+          
+          const fullscreenButton = document.querySelector("#unity-fullscreen-button");
+          if (fullscreenButton) {
+            fullscreenButton.style.display = 'none';
+          }
+          
+          const footer = document.querySelector("#unity-footer");
+          if (footer) {
+            footer.style.display = 'none';
+          }
+          
+          // Try to enter fullscreen if supported
+          if (document.documentElement.requestFullscreen) {
+            document.documentElement.requestFullscreen().catch(function(err) {
+              console.log('Fullscreen not supported or blocked:', err);
+            });
+          } else if (document.documentElement.webkitRequestFullscreen) {
+            document.documentElement.webkitRequestFullscreen();
+          } else if (document.documentElement.mozRequestFullScreen) {
+            document.documentElement.mozRequestFullScreen();
+          }
+        }
+      }
+
+      // Initialize device orientation and motion
+      function initializeDeviceControls() {
+        console.log('Initializing device controls...');
+        
+        // Set up orientation change listeners
+        if (typeof screen !== 'undefined' && screen.orientation) {
+          screen.orientation.addEventListener('change', sendOrientationToUnity);
+        } else if (typeof window !== 'undefined' && window.orientation !== undefined) {
+          window.addEventListener('orientationchange', sendOrientationToUnity);
+        }
+
+        // Send initial orientation
+        sendOrientationToUnity();
+        
+        // Set up periodic updates
+        setInterval(function() {
+          sendOrientationToUnity();
+        }, 100); // Update every 100ms
+
+        // Request motion permission after a short delay to ensure Unity is ready
+        setTimeout(function() {
+          requestMotionPermission();
+        }, 1000);
+      }
+
+      // Check if device is mobile and handle desktop overlay
+      function handleMobileOnlyDisplay() {
+        const mobileOnlyOverlay = document.getElementById('mobile-only-overlay');
+        const mobilePermissionOverlay = document.getElementById('mobile-permission-overlay');
+        const unityContainer = document.getElementById('unity-container');
+        
+        if (isMobile) {
+          // Hide mobile-only overlay on mobile devices
+          if (mobileOnlyOverlay) {
+            mobileOnlyOverlay.style.display = 'none';
+          }
+          
+          // Always show permission overlay - never auto-load game
+          // This ensures user always sees the permission button and goes fullscreen
+          console.log('Showing permission overlay for user interaction');
+          if (mobilePermissionOverlay) {
+            mobilePermissionOverlay.style.display = 'flex';
+          }
+          if (unityContainer) {
+            unityContainer.style.display = 'none';
+          }
+        } else {
+          // Show mobile-only overlay on desktop
+          if (mobileOnlyOverlay) {
+            mobileOnlyOverlay.style.display = 'flex';
+          }
+          // Hide permission overlay on desktop
+          if (mobilePermissionOverlay) {
+            mobilePermissionOverlay.style.display = 'none';
+          }
+          // Hide Unity container on desktop
+          if (unityContainer) {
+            unityContainer.style.display = 'none';
+          }
+        }
+      }
+
+      // Display static QR code image
+      function displayQRCode() {
+        const qrCodeElement = document.getElementById('qr-code');
+        if (qrCodeElement) {
+          // Clear any existing content
+          qrCodeElement.innerHTML = '';
+          
+          // Create and add the QR code image
+          const img = document.createElement('img');
+          img.src = 'QRCODE.png';
+          img.alt = 'QR Code to play BeanBox';
+          img.style.width = '200px';
+          img.style.height = '200px';
+          img.style.border = '3px solid #8B4513';
+          img.style.borderRadius = '10px';
+          img.style.backgroundColor = '#ffffff';
+          img.style.padding = '10px';
+          qrCodeElement.appendChild(img);
+        }
+      }
+
+      var buildUrl = "Build";
+      var loaderUrl = buildUrl + "/BeanLandBuild.loader.js";
+      var config = {
+        arguments: [],
+        dataUrl: buildUrl + "/BeanLandBuild.data",
+        frameworkUrl: buildUrl + "/BeanLandBuild.framework.js",
+        codeUrl: buildUrl + "/BeanLandBuild.wasm",
+        streamingAssetsUrl: "StreamingAssets",
+        companyName: "Ethan Orr",
+        productName: "BeanBox",
+        productVersion: "1.0",
+        showBanner: unityShowBanner,
+        // Allow Unity to match canvas size dynamically
+        matchWebGLToCanvasSize: isMobile ? true : false,
+        // Add timeout and error handling
+        timeout: 60000,
+      };
+
+      // Handle mobile-only display
+      handleMobileOnlyDisplay();
+      
+      // Lock orientation to portrait on mobile immediately
+      if (isMobile) {
+        lockOrientationToPortrait();
+        setupPermissionButton();
+      }
+      
+      // Display QR code on desktop
+      if (!isMobile) {
+        displayQRCode();
+      }
+
+      // Intelligent canvas sizing for mobile devices
+      function resizeCanvas() {
+        if (!isMobile) return;
+        
+        // Get the actual viewport dimensions (accounts for Safari UI elements)
+        const viewportWidth = window.innerWidth;
+        const viewportHeight = window.innerHeight;
+        
+        // Target aspect ratio for portrait phone (9:16 is typical, but we'll use 9:19.5 for modern phones)
+        const targetAspectRatio = 9 / 19.5;
+        
+        // Calculate the best fit
+        let canvasWidth = viewportWidth;
+        let canvasHeight = viewportWidth / targetAspectRatio;
+        
+        // If height exceeds viewport, constrain by height instead
+        if (canvasHeight > viewportHeight) {
+          canvasHeight = viewportHeight;
+          canvasWidth = canvasHeight * targetAspectRatio;
+        }
+        
+        // Set canvas resolution (higher for better quality)
+        canvas.width = 800;
+        canvas.height = Math.round(800 / targetAspectRatio);
+        
+        // Set display size (what user sees)
+        canvas.style.width = canvasWidth + 'px';
+        canvas.style.height = canvasHeight + 'px';
+        
+        // Center the canvas
+        canvas.style.position = 'absolute';
+        canvas.style.left = '50%';
+        canvas.style.top = '50%';
+        canvas.style.transform = 'translate(-50%, -50%)';
+        
+        // Add black background to container for letterboxing
+        const container = document.querySelector("#unity-container");
+        if (container) {
+          container.style.background = '#000';
+          container.style.position = 'fixed';
+          container.style.top = '0';
+          container.style.left = '0';
+          container.style.width = '100%';
+          container.style.height = '100%';
+        }
+        
+        console.log('Canvas resized:', canvasWidth + 'x' + canvasHeight, 'viewport:', viewportWidth + 'x' + viewportHeight);
+      }
+
+      if (isMobile) {
+        // Mobile device style: fill the whole browser client area with the game canvas:
+        document.querySelector("#unity-container").className = "unity-mobile";
+        canvas.className = "unity-mobile";
+        
+        // Initial resize
+        resizeCanvas();
+        
+        // Resize on orientation change and window resize
+        window.addEventListener('resize', resizeCanvas);
+        window.addEventListener('orientationchange', function() {
+          setTimeout(resizeCanvas, 300); // Delay to allow Safari UI to settle
+        });
+        
+        // Also resize after fullscreen changes
+        document.addEventListener('fullscreenchange', resizeCanvas);
+        document.addEventListener('webkitfullscreenchange', resizeCanvas);
+      } else {
+        // Desktop style: Constrain to phone-like dimensions with black bars
+        canvas.width = 800;
+        canvas.height = 1800;
+        canvas.style.width = "800px";
+        canvas.style.height = "1800px";
+      }
+
+      // Creative loading messages
+      const loadingMessages = [
+        "Roasting the coffee beans...",
+        "Grinding the beans...",
+        "Heating up the espresso machine...",
+        "Calibrating gravity controls...",
+        "Placing obstacles...",
+        "Brewing the perfect cup...",
+        "Adding steampunk decorations...",
+        "Testing the tilting mechanics...",
+        "Polishing the game world...",
+        "Final touches on the espresso...",
+        "Almost ready to play...",
+        "Just a few more seconds..."
+      ];
+      
+      var currentMessageIndex = 0;
+      var loadingMessageInterval = null;
+      
+      function updateLoadingMessage(progress) {
+        const loadingText = document.getElementById('loading-text');
+        
+        if (!loadingText) return;
+        
+        // Set up interval to change message every 4 seconds if not already set
+        if (!loadingMessageInterval) {
+          // Display first message immediately
+          loadingText.textContent = loadingMessages[0];
+          
+          // Set up interval to cycle through messages
+          loadingMessageInterval = setInterval(function() {
+            currentMessageIndex = (currentMessageIndex + 1) % loadingMessages.length;
+            loadingText.textContent = loadingMessages[currentMessageIndex];
+          }, 4000);
+        }
+      }
+
+      // Function to start loading Unity
+      function startLoadingUnity() {
+        console.log('Starting Unity load...');
+        
+        var script = document.createElement("script");
+        script.src = loaderUrl;
+        script.onload = () => {
+          // Show loading indicator in permission overlay
+          const loadingIndicator = document.getElementById('loading-indicator');
+          const permissionButton = document.getElementById('permission-button');
+          if (loadingIndicator) {
+            loadingIndicator.style.display = 'block';
+          }
+          if (permissionButton) {
+            permissionButton.style.display = 'none';
+          }
+          
+          createUnityInstance(canvas, config, (progress) => {
+            // Update progress in permission overlay
+            const progressBar = document.getElementById('permission-progress-bar');
+            if (progressBar) {
+              progressBar.style.width = 100 * progress + "%";
+            }
+            
+            // Update loading message
+            updateLoadingMessage(progress);
+          }).then((unityInstance) => {
+            gameInstance = unityInstance;
+            console.log('Unity instance created successfully');
+            console.log('Unity instance methods available:', Object.keys(unityInstance));
+            
+            // Clear loading message interval
+            if (loadingMessageInterval) {
+              clearInterval(loadingMessageInterval);
+              loadingMessageInterval = null;
+            }
+            
+            // Set up fullscreen button handler
+            document.querySelector("#unity-fullscreen-button").onclick = () => {
+              unityInstance.SetFullscreen(1);
+            };
+            
+            // Initialize device controls after Unity loads
+            initializeDeviceControls();
+            
+            // Auto-enter fullscreen after Unity loads (permission already granted at this point)
+            enterFullscreenDirectly();
+            
+          }).catch((message) => {
+            console.error('Unity loading failed:', message);
+            alert('Game loading failed: ' + message);
+          });
+        };
+
+        document.body.appendChild(script);
+      }
+
+      // Check if motion permission is already granted by testing for actual motion data
+      function checkExistingPermissionAndLoad() {
+        console.log('Checking if motion permission already granted...');
+        
+        let motionDetected = false;
+        let testTimeout = null;
+        
+        // Test function to see if we receive motion events
+        function testMotionHandler(event) {
+          if (event.accelerationIncludingGravity && 
+              (event.accelerationIncludingGravity.x !== null || 
+               event.accelerationIncludingGravity.y !== null || 
+               event.accelerationIncludingGravity.z !== null)) {
+            motionDetected = true;
+            console.log('Motion data detected - permission already granted!');
+            
+            // Clean up
+            window.removeEventListener('devicemotion', testMotionHandler);
+            if (testTimeout) clearTimeout(testTimeout);
+            
+            // Auto-load the game
+            updatePermissionUIForAutoLoad();
+            motionPermissionGranted = true;
+            startMotionDetection();
+            startLoadingUnity();
+          }
+        }
+        
+        // Listen for motion events for a brief period
+        window.addEventListener('devicemotion', testMotionHandler);
+        
+        // If no motion detected after 1 second, show permission button
+        testTimeout = setTimeout(function() {
+          if (!motionDetected) {
+            console.log('No motion data detected - showing permission button');
+            window.removeEventListener('devicemotion', testMotionHandler);
+            showPermissionButton();
+          }
+        }, 1000);
+      }
+      
+      // Update UI to show "Loading game..." instead of permission button
+      function updatePermissionUIForAutoLoad() {
+        const permissionTitle = document.querySelector('.permission-title');
+        const permissionText = document.querySelectorAll('.permission-text');
+        const permissionButton = document.getElementById('permission-button');
+        const permissionFooter = document.querySelector('.permission-footer');
+        const permissionIcon = document.querySelector('.permission-icon');
+        
+        if (permissionTitle) permissionTitle.textContent = 'Loading BeanBox...';
+        if (permissionIcon) permissionIcon.textContent = '☕';
+        permissionText.forEach(el => el.style.display = 'none');
+        if (permissionButton) permissionButton.style.display = 'none';
+        if (permissionFooter) {
+          permissionFooter.textContent = 'Your previous orientation permission is active.';
+          permissionFooter.style.display = 'block';
+        }
+      }
+      
+      // Show permission button (original flow)
+      function showPermissionButton() {
+        const permissionButton = document.getElementById('permission-button');
+        if (permissionButton) {
+          permissionButton.style.display = 'block';
+          permissionButton.onclick = function() {
+            console.log('Permission button clicked - requesting permission then loading game');
+            
+            // Hide button and start loading
+            permissionButton.style.display = 'none';
+            
+            // Request permission, then start loading Unity
+            requestMotionPermissionThenLoad();
+          };
+        }
+        
+        // Set up permission button
+        setupPermissionButton();
+      }
+
+      // Load Unity on mobile devices (but don't show until permission granted)
+      if (isMobile) {
+        // Hide loading bar initially - will show in permission overlay
+        document.querySelector("#unity-loading-bar").style.display = "none";
+        
+        // Check if permission already granted and auto-load if so
+        checkExistingPermissionAndLoad();
+        
+      } else {
+        // On desktop, hide the loading bar
+        document.querySelector("#unity-loading-bar").style.display = "none";
+      }
+
+    </script>
+  </body>
+</html>

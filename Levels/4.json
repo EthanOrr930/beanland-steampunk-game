@@ -1,0 +1,130 @@
+{
+    "levelName": "4",
+    "version": "1.0",
+    "prefabs": [
+        {
+            "prefabName": "Walls_7 (1)",
+            "prefabPath": "Walls_7",
+            "position": {
+                "x": 3.31473970413208,
+                "y": -4.2,
+                "z": 0.0
+            },
+            "rotation": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "scale": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            }
+        },
+        {
+            "prefabName": "Walls_3",
+            "prefabPath": "Walls_3",
+            "position": {
+                "x": -0.3400000035762787,
+                "y": 0.20000000298023225,
+                "z": 0.0
+            },
+            "rotation": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "scale": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            }
+        },
+        {
+            "prefabName": "Walls_7",
+            "prefabPath": "Walls_7",
+            "position": {
+                "x": 4.244999885559082,
+                "y": 0.21299999952316285,
+                "z": 1.0
+            },
+            "rotation": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 90.0
+            },
+            "scale": {
+                "x": 0.800000011920929,
+                "y": 1.0,
+                "z": 1.0
+            }
+        },
+        {
+            "prefabName": "Grinder",
+            "prefabPath": "Grinder",
+            "position": {
+                "x": 6.034247398376465,
+                "y": 1.6827783584594727,
+                "z": 0.0
+            },
+            "rotation": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "scale": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            }
+        },
+        {
+            "prefabName": "EspressoMachine",
+            "prefabPath": "EspressoMachine",
+            "position": {
+                "x": 4.389999866485596,
+                "y": -2.4100000858306886,
+                "z": 0.0
+            },
+            "rotation": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 270.0
+            },
+            "scale": {
+                "x": 0.5,
+                "y": 0.5,
+                "z": 0.5
+            }
+        }
+    ],
+    "transforms": [
+        {
+            "objectName": "Player",
+            "objectTag": "Player",
+            "position": {
+                "x": 0.7599999904632568,
+                "y": 1.7599999904632569,
+                "z": 0.0
+            },
+            "rotation": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "scale": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            }
+        }
+    ],
+    "buttonConnections": [],
+    "springJoints": [],
+    "playerSettings": {
+        "maxLaunches": 10,
+        "currentLaunches": 0,
+        "infiniteDashes": true
+    },
+    "exportTimestamp": 1759884300
+}

@@ -1,0 +1,205 @@
+{
+    "levelName": "7",
+    "version": "1.0",
+    "prefabs": [
+        {
+            "prefabName": "SwitchingWall",
+            "prefabPath": "SwitchingWall",
+            "position": {
+                "x": -0.10576891899108887,
+                "y": 1.062563180923462,
+                "z": 0.0
+            },
+            "rotation": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "scale": {
+                "x": 2.0,
+                "y": 2.0,
+                "z": 1.0
+            }
+        },
+        {
+            "prefabName": "SwitchingWall (1)",
+            "prefabPath": "SwitchingWall",
+            "position": {
+                "x": 3.200000047683716,
+                "y": 1.062563180923462,
+                "z": 0.0
+            },
+            "rotation": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "scale": {
+                "x": 2.0,
+                "y": 2.0,
+                "z": 1.0
+            }
+        },
+        {
+            "prefabName": "Platform",
+            "prefabPath": "Platform",
+            "position": {
+                "x": 6.284003257751465,
+                "y": 0.732401967048645,
+                "z": 0.0
+            },
+            "rotation": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 90.0
+            },
+            "scale": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": -1.0
+            }
+        },
+        {
+            "prefabName": "EspressoMachine",
+            "prefabPath": "EspressoMachine",
+            "position": {
+                "x": 6.139401435852051,
+                "y": 1.8892161846160889,
+                "z": 0.0
+            },
+            "rotation": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "scale": {
+                "x": 0.5,
+                "y": 0.5,
+                "z": 0.5
+            }
+        },
+        {
+            "prefabName": "SwitchingWall (2)",
+            "prefabPath": "SwitchingWall",
+            "position": {
+                "x": 5.050000190734863,
+                "y": 2.630000114440918,
+                "z": 0.0
+            },
+            "rotation": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 90.0
+            },
+            "scale": {
+                "x": 2.0,
+                "y": 2.0,
+                "z": 1.0
+            }
+        },
+        {
+            "prefabName": "Button",
+            "prefabPath": "Button",
+            "position": {
+                "x": -0.9399999976158142,
+                "y": -4.78000020980835,
+                "z": 0.0
+            },
+            "rotation": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "scale": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            }
+        },
+        {
+            "prefabName": "Button (1)",
+            "prefabPath": "Button",
+            "position": {
+                "x": 5.110000133514404,
+                "y": 0.06599999964237213,
+                "z": 0.0
+            },
+            "rotation": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 238.20431518554688
+            },
+            "scale": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            }
+        },
+        {
+            "prefabName": "Balloon(NoString)",
+            "prefabPath": "Balloon(NoString)",
+            "position": {
+                "x": 1.760939598083496,
+                "y": -3.211411476135254,
+                "z": 0.0
+            },
+            "rotation": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "scale": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            }
+        }
+    ],
+    "transforms": [
+        {
+            "objectName": "Player",
+            "objectTag": "Player",
+            "position": {
+                "x": 3.0299999713897707,
+                "y": -4.610000133514404,
+                "z": 0.0
+            },
+            "rotation": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "scale": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            }
+        }
+    ],
+    "buttonConnections": [
+        {
+            "buttonName": "Button (1)",
+            "targetObjectNames": [
+                "SwitchingWall (2)"
+            ],
+            "isInvertible": false,
+            "detectionRadius": 0.5
+        },
+        {
+            "buttonName": "Button",
+            "targetObjectNames": [
+                "SwitchingWall (1)",
+                "SwitchingWall"
+            ],
+            "isInvertible": false,
+            "detectionRadius": 0.5
+        }
+    ],
+    "springJoints": [],
+    "playerSettings": {
+        "maxLaunches": 0,
+        "currentLaunches": 0,
+        "infiniteDashes": false
+    },
+    "exportTimestamp": 1759965692
+}

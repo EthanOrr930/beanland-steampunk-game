@@ -1,0 +1,30 @@
+{
+  "name": "beanbox-steampunk-game",
+  "version": "1.0.0",
+  "description": "BeanBox Steampunk Gravity Adventure - Unity WebGL Game with Device Orientation Controls",
+  "main": "server.js",
+  "scripts": {
+    "dev": "node simple-server.js",
+    "start": "node simple-server.js",
+    "https": "node server.js",
+    "build": "echo 'Static site - no build needed'",
+    "test": "echo 'Open http://localhost:8080/test-orientation.html to test device orientation'"
+  },
+  "keywords": [
+    "unity",
+    "webgl",
+    "steampunk",
+    "mobile",
+    "gravity",
+    "orientation",
+    "game"
+  ],
+  "author": "BeanBox Development Team",
+  "license": "MIT",
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}

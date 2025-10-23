@@ -1,0 +1,376 @@
+fileFormatVersion: 2
+guid: c08976da077be7842b593493c81b76b9
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -2411824589520696900
+    second: singePuff_0
+  - first:
+      213: -4522672667637366941
+    second: singePuff_1
+  - first:
+      213: 3797797362719741277
+    second: singePuff_2
+  - first:
+      213: 7172024484696526695
+    second: singePuff_3
+  - first:
+      213: 8803626757745826982
+    second: singePuff_4
+  - first:
+      213: -3138962684063980977
+    second: singePuff_5
+  - first:
+      213: -3546472149790512706
+    second: singePuff_6
+  - first:
+      213: 2433692047719139176
+    second: singePuff_7
+  - first:
+      213: -5278069961551538761
+    second: singePuff_8
+  - first:
+      213: 349091567905228848
+    second: singePuff_9
+  - first:
+      213: -9155294548453527475
+    second: singePuff_10
+  - first:
+      213: -7985830631539548259
+    second: singePuff_11
+  - first:
+      213: 7251911095978916574
+    second: singePuff_12
+  - first:
+      213: -826673154994714726
+    second: singePuff_13
+  - first:
+      213: -3066253427690503886
+    second: singePuff_14
+  - first:
+      213: 6474057134113984316
+    second: singePuff_15
+  - first:
+      213: -3940099746046124704
+    second: singePuff_16
+  - first:
+      213: -4600891233560602907
+    second: singePuff_17
+  - first:
+      213: -4274959378515924913
+    second: singePuff_18
+  - first:
+      213: 3636425930155596904
+    second: singePuff_19
+  - first:
+      213: 2583126818873885244
+    second: singePuff_20
+  - first:
+      213: -8663525143981043587
+    second: singePuff_21
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: iOS
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: singePuff_0
+      rect:
+        serializedVersion: 2
+        x: 1
+        y: 264
+        width: 218
+        height: 260
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cb90111705a778ed0800000000000000
+      internalID: -2411824589520696900
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: singePuff_1
+      rect:
+        serializedVersion: 2
+        x: 255
+        y: 264
+        width: 218
+        height: 260
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 36f3b12cb2d3c31c0800000000000000
+      internalID: -4522672667637366941
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: singePuff_2
+      rect:
+        serializedVersion: 2
+        x: 519
+        y: 264
+        width: 218
+        height: 260
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d5553dd649c74b430800000000000000
+      internalID: 3797797362719741277
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: singePuff_3
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 218
+        height: 260
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 76f8db21546288360800000000000000
+      internalID: 7172024484696526695
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: singePuff_4
+      rect:
+        serializedVersion: 2
+        x: 255
+        y: 0
+        width: 218
+        height: 260
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6ac509e74e3cc2a70800000000000000
+      internalID: 8803626757745826982
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: singePuff_5
+      rect:
+        serializedVersion: 2
+        x: 519
+        y: 0
+        width: 218
+        height: 260
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f42e82dd11a2074d0800000000000000
+      internalID: -3138962684063980977
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: bed8ea0f0cc4bb244af2a0daa7707b3a
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      singePuff_0: -2411824589520696900
+      singePuff_1: -4522672667637366941
+      singePuff_10: -9155294548453527475
+      singePuff_11: -7985830631539548259
+      singePuff_12: 7251911095978916574
+      singePuff_13: -826673154994714726
+      singePuff_14: -3066253427690503886
+      singePuff_15: 6474057134113984316
+      singePuff_16: -3940099746046124704
+      singePuff_17: -4600891233560602907
+      singePuff_18: -4274959378515924913
+      singePuff_19: 3636425930155596904
+      singePuff_2: 3797797362719741277
+      singePuff_20: 2583126818873885244
+      singePuff_21: -8663525143981043587
+      singePuff_3: 7172024484696526695
+      singePuff_4: 8803626757745826982
+      singePuff_5: -3138962684063980977
+      singePuff_6: -3546472149790512706
+      singePuff_7: 2433692047719139176
+      singePuff_8: -5278069961551538761
+      singePuff_9: 349091567905228848
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -1,0 +1,574 @@
+/* Modern Coffee Shop BeanBox Theme */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Quicksand:wght@300;400;500;600;700&family=Great+Vibes&family=Roboto:wght@300;400;500;700&display=swap');
+
+:root {
+  --coffee-brown: #8B4513;
+  --espresso-dark: #D2691E;
+  --cream-light: #FFF8DC;
+  --coffee-bean: #A0522D;
+  --copper-accent: #CD853F;
+  --gold-highlight: #FFD700;
+  --steam-white: #FFFFFF;
+  --shadow-light: #F5DEB3;
+  --steam-blue: #87CEEB;
+  --light-coffee: #F4E4BC;
+  --warm-brown: #DEB887;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background: #ffffff;
+  font-family: 'Quicksand', 'Roboto', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  color: var(--coffee-brown);
+  overflow: hidden;
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+}
+
+/* Clean minimal background - removed gradients */
+
+/* Hide steampunk background on mobile and when container is mobile */
+.unity-mobile body::before {
+  display: none;
+}
+
+/* Also hide on mobile devices */
+@media (max-width: 768px) {
+  body::before {
+    display: none;
+  }
+}
+
+#unity-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff;
+}
+
+#unity-container.unity-mobile {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background: #000000;
+}
+
+#unity-canvas {
+  background: #231F20;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  position: relative;
+  /* Constrain to phone-like dimensions (800x1800) */
+  width: 800px;
+  height: 1800px;
+  max-width: 800px;
+  max-height: 1800px;
+}
+
+.unity-mobile #unity-canvas {
+  /* On mobile, allow device to control sizing */
+  width: 100vw;
+  height: 100vh;
+  max-width: none;
+  max-height: none;
+  object-fit: contain;
+}
+
+/* Desktop: Black bars for ultra-wide screens */
+@media (min-width: 769px) and (min-aspect-ratio: 800/1800) {
+  #unity-canvas {
+    width: auto;
+    height: 100vh;
+    max-width: calc(100vh * 800 / 1800);
+  }
+}
+
+@media (min-width: 769px) and (max-aspect-ratio: 800/1800) {
+  #unity-canvas {
+    width: 100vw;
+    height: auto;
+    max-height: calc(100vw * 1800 / 800);
+  }
+}
+
+/* Mobile: Allow full device control */
+@media (max-width: 768px) {
+  #unity-canvas {
+    width: 100vw !important;
+    height: 100vh !important;
+    max-width: none !important;
+    max-height: none !important;
+  }
+  
+  #unity-container {
+    width: 100vw !important;
+    height: 100vh !important;
+  }
+}
+
+/* Clean loading bar */
+#unity-loading-bar {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  display: none;
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+#unity-logo {
+  width: 154px;
+  height: 130px;
+  background: url('TemplateData/unity-logo-dark.png') no-repeat center;
+  background-size: contain;
+  margin: 0 auto;
+}
+
+#unity-progress-bar-empty {
+  width: 200px;
+  height: 20px;
+  margin: 15px auto 0;
+  background: #f0f0f0;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+}
+
+#unity-progress-bar-full {
+  width: 0%;
+  height: 100%;
+  background: var(--coffee-brown);
+  transition: width 0.3s ease;
+  position: relative;
+}
+
+#unity-progress-bar-full::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  animation: steam-flow 2s infinite;
+}
+
+@keyframes steam-flow {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* Clean footer */
+#unity-footer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #ffffff;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid #e0e0e0;
+}
+
+.unity-mobile #unity-footer {
+  display: none;
+}
+
+#unity-logo-title-footer {
+  width: 102px;
+  height: 38px;
+  background: url('TemplateData/unity-logo-title-footer.png') no-repeat center;
+  background-size: contain;
+}
+
+#unity-build-title {
+  font-family: 'Quicksand', 'Roboto', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--coffee-brown);
+  letter-spacing: 0.5px;
+}
+
+#unity-fullscreen-button {
+  cursor: pointer;
+  width: 38px;
+  height: 38px;
+  background: url('TemplateData/fullscreen-button.png') no-repeat center;
+  background-size: contain;
+  transition: transform 0.3s ease;
+  border: 1px solid #e0e0e0;
+  border-radius: 50%;
+  background-color: #f8f9fa;
+}
+
+#unity-fullscreen-button:hover {
+  transform: scale(1.05);
+  background-color: #e9ecef;
+}
+
+/* Clean warning banner */
+#unity-warning {
+  position: absolute;
+  left: 50%;
+  top: 5%;
+  transform: translate(-50%);
+  background: #ffffff;
+  padding: 15px 25px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  display: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  font-family: 'Quicksand', 'Roboto', sans-serif;
+  font-weight: 600;
+}
+
+
+/* Gear decorations removed for clean professional look */
+
+/* Mobile-specific adjustments */
+@media (max-width: 768px) {
+  .orientation-indicator {
+    top: 10px;
+    right: 10px;
+    font-size: 10px;
+    padding: 8px 12px;
+  }
+}
+
+/* Portrait mode optimization */
+@media (orientation: portrait) {
+  #unity-canvas {
+    max-width: 100vw;
+    max-height: 100vh;
+  }
+}
+
+/* Landscape mode adjustments */
+@media (orientation: landscape) {
+  .orientation-indicator {
+    top: 5px;
+    right: 5px;
+  }
+}
+
+/* Mobile-only overlay for desktop users */
+.mobile-only-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  font-family: 'Quicksand', 'Roboto', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.mobile-message {
+  text-align: center;
+  max-width: 500px;
+  padding: 40px;
+  background: #ffffff;
+  border: 2px solid #e0e0e0;
+  border-radius: 12px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+/* Removed gradient border animation for clean minimal design */
+
+.pixel-title {
+  font-family: 'Montserrat', 'Quicksand', sans-serif;
+  font-size: 44px;
+  font-weight: 700;
+  color: var(--coffee-brown);
+  margin-bottom: 20px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.pixel-subtitle {
+  font-family: 'Quicksand', 'Roboto', sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--espresso-dark);
+  margin-bottom: 30px;
+  opacity: 0.9;
+  line-height: 1.4;
+}
+
+.mobile-icon-container {
+  margin: 20px 0;
+  position: relative;
+}
+
+.mobile-icon {
+  font-size: 60px;
+  animation: phone-bounce 1.5s ease-in-out infinite;
+  margin-bottom: 10px;
+}
+
+.gravity-arrows {
+  font-size: 16px;
+  color: var(--coffee-brown);
+  animation: arrow-pulse 2s ease-in-out infinite;
+  opacity: 0.8;
+}
+
+.pixel-text {
+  font-family: 'Quicksand', 'Roboto', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--espresso-dark);
+  margin: 15px 0;
+  line-height: 1.6;
+}
+
+.qr-placeholder {
+  margin-top: 25px;
+  padding: 20px;
+  background: #f8f9fa;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+}
+
+.qr-text {
+  font-family: 'Quicksand', 'Roboto', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--coffee-brown);
+  margin-bottom: 15px;
+}
+
+.qr-subtitle {
+  font-family: 'Quicksand', 'Roboto', sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--espresso-dark);
+  margin-top: 10px;
+  opacity: 0.7;
+}
+
+.qr-code {
+  width: 120px;
+  height: 120px;
+  background: #ffffff;
+  margin: 0 auto;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 8px;
+  color: #000000;
+  position: relative;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Mobile permission overlay */
+.mobile-permission-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: #ffffff;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 20000;
+  font-family: 'Quicksand', 'Roboto', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.permission-message {
+  text-align: center;
+  max-width: 400px;
+  padding: 40px;
+  background: #ffffff;
+  border: 2px solid #e0e0e0;
+  border-radius: 12px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+.permission-title {
+  font-family: 'Montserrat', 'Quicksand', sans-serif;
+  font-size: 30px;
+  font-weight: 700;
+  color: var(--coffee-brown);
+  margin-bottom: 15px;
+  text-shadow: 1px 1px 3px rgba(139, 69, 19, 0.15);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+
+.permission-subtitle {
+  font-family: 'Quicksand', 'Roboto', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--espresso-dark);
+  margin-bottom: 20px;
+  opacity: 0.9;
+}
+
+.permission-icon {
+  font-size: 40px;
+  animation: phone-bounce 1.5s ease-in-out infinite;
+  margin: 15px 0;
+}
+
+.permission-text {
+  font-family: 'Quicksand', 'Roboto', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--espresso-dark);
+  margin: 10px 0;
+  line-height: 1.6;
+}
+
+.permission-button {
+  background: var(--coffee-brown);
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  padding: 16px 32px;
+  font-family: 'Quicksand', 'Roboto', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  margin: 20px auto;
+  display: block;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(139, 69, 19, 0.2);
+}
+
+.permission-button:hover {
+  background: var(--espresso-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(139, 69, 19, 0.3);
+}
+
+.permission-button:active {
+  transform: translateY(0px);
+  box-shadow: 0 2px 4px rgba(139, 69, 19, 0.3);
+}
+
+.permission-footer {
+  font-size: 6px;
+  color: var(--espresso-dark);
+  margin-top: 15px;
+  opacity: 0.7;
+}
+
+.loading-indicator {
+  margin-top: 20px;
+}
+
+.loading-text {
+  font-family: 'Quicksand', 'Roboto', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--espresso-dark);
+  margin-bottom: 10px;
+}
+
+.loading-bar {
+  width: 200px;
+  height: 8px;
+  background: #f0f0f0;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  overflow: hidden;
+  margin: 0 auto;
+}
+
+.loading-progress {
+  width: 0%;
+  height: 100%;
+  background: var(--coffee-brown);
+  transition: width 0.3s ease;
+}
+
+/* Hide mobile-only overlay on mobile devices */
+@media (max-width: 768px) {
+  .mobile-only-overlay {
+    display: none;
+  }
+}
+
+/* Pixel animations */
+@keyframes pixel-glow {
+  0% { 
+    text-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
+    transform: scale(1);
+  }
+  100% { 
+    text-shadow: 0 0 25px rgba(255, 215, 0, 0.8);
+    transform: scale(1.02);
+  }
+}
+
+@keyframes phone-bounce {
+  0%, 100% { transform: translateY(0px) rotate(-5deg); }
+  50% { transform: translateY(-10px) rotate(5deg); }
+}
+
+@keyframes border-glow {
+  0%, 100% { 
+    opacity: 0.8;
+    transform: scale(1);
+  }
+  50% { 
+    opacity: 1;
+    transform: scale(1.01);
+  }
+}
+
+@keyframes arrow-pulse {
+  0%, 100% { 
+    opacity: 0.6;
+    transform: scale(1);
+  }
+  50% { 
+    opacity: 1;
+    transform: scale(1.1);
+  }
+}
+
+/* Desktop-specific steampunk styling */
+@media (min-width: 769px) {
+  .mobile-only-overlay .mobile-message {
+    background: linear-gradient(135deg, var(--dark-brass), var(--brass));
+    border: 3px solid var(--gold);
+    box-shadow: 
+      0 0 30px rgba(255, 215, 0, 0.4),
+      inset 0 0 30px rgba(0, 0, 0, 0.3);
+  }
+  
+  .pixel-title {
+    color: var(--gold);
+    text-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
+  }
+}

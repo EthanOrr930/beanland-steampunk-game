@@ -1,0 +1,196 @@
+{
+    "levelName": "6",
+    "version": "1.0",
+    "prefabs": [
+        {
+            "prefabName": "Button",
+            "prefabPath": "Button",
+            "position": {
+                "x": -1.1545076370239258,
+                "y": 3.406277656555176,
+                "z": 0.0
+            },
+            "rotation": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 270.0
+            },
+            "scale": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            }
+        },
+        {
+            "prefabName": "Platform",
+            "prefabPath": "Platform",
+            "position": {
+                "x": -1.084050178527832,
+                "y": 0.8228113651275635,
+                "z": 0.0
+            },
+            "rotation": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 90.0
+            },
+            "scale": {
+                "x": 1.0,
+                "y": -1.0,
+                "z": -1.0
+            }
+        },
+        {
+            "prefabName": "EspressoMachine",
+            "prefabPath": "EspressoMachine",
+            "position": {
+                "x": -0.8299999833106995,
+                "y": -4.409999847412109,
+                "z": 0.0
+            },
+            "rotation": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "scale": {
+                "x": 0.5,
+                "y": 0.5,
+                "z": 0.5
+            }
+        },
+        {
+            "prefabName": "SwitchingWall",
+            "prefabPath": "SwitchingWall",
+            "position": {
+                "x": 0.41999998688697817,
+                "y": -4.320635795593262,
+                "z": 1.0
+            },
+            "rotation": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 270.0
+            },
+            "scale": {
+                "x": 2.0,
+                "y": 2.0,
+                "z": 1.0
+            }
+        },
+        {
+            "prefabName": "Walls_8",
+            "prefabPath": "Walls_8",
+            "position": {
+                "x": 5.659999847412109,
+                "y": -4.139999866485596,
+                "z": 0.0
+            },
+            "rotation": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 90.0
+            },
+            "scale": {
+                "x": 2.0,
+                "y": 2.0,
+                "z": 1.0
+            }
+        },
+        {
+            "prefabName": "Walls_7",
+            "prefabPath": "Walls_7",
+            "position": {
+                "x": 0.4053981304168701,
+                "y": -2.4254536628723146,
+                "z": 0.0
+            },
+            "rotation": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 90.0
+            },
+            "scale": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            }
+        },
+        {
+            "prefabName": "Walls_3",
+            "prefabPath": "Walls_3",
+            "position": {
+                "x": 3.122999906539917,
+                "y": -4.679999828338623,
+                "z": 0.0
+            },
+            "rotation": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 270.0
+            },
+            "scale": {
+                "x": 1.2999999523162842,
+                "y": 1.2999999523162842,
+                "z": 1.0
+            }
+        },
+        {
+            "prefabName": "Grinder",
+            "prefabPath": "Grinder",
+            "position": {
+                "x": 1.7300000190734864,
+                "y": -0.8100000023841858,
+                "z": 0.0
+            },
+            "rotation": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "scale": {
+                "x": -1.0,
+                "y": 1.0,
+                "z": 1.0
+            }
+        }
+    ],
+    "transforms": [
+        {
+            "objectName": "Player",
+            "objectTag": "Player",
+            "position": {
+                "x": -0.8799999952316284,
+                "y": 1.940000057220459,
+                "z": 0.0
+            },
+            "rotation": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "scale": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            }
+        }
+    ],
+    "buttonConnections": [
+        {
+            "buttonName": "Button",
+            "targetObjectNames": [
+                "SwitchingWall"
+            ],
+            "isInvertible": false,
+            "detectionRadius": 0.5
+        }
+    ],
+    "springJoints": [],
+    "playerSettings": {
+        "maxLaunches": 0,
+        "currentLaunches": 0,
+        "infiniteDashes": true
+    },
+    "exportTimestamp": 1759965225
+}

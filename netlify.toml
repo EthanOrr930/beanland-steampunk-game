@@ -1,0 +1,5 @@
+[build]
+  # Static site - no build process needed
+  command = "echo 'Deploying BeanBox Unity WebGL game'"
+  publish = "."
+
