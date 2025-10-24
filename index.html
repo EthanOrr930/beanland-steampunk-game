@@ -12,75 +12,141 @@
     <link rel="stylesheet" href="steampunk-style.css">
     <link rel="stylesheet" href="TemplateData/style.css">
     <script src="multiplayer-room-manager.js"></script>
-    
-    <!-- Mobile Debug Console Styles -->
     <style>
-      #mobile-debug-console {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.9);
-        color: #00ff00;
-        font-family: 'Courier New', monospace;
-        font-size: 12px;
-        z-index: 9999;
-        display: none;
-        overflow-y: auto;
-        padding: 10px;
-        box-sizing: border-box;
-      }
-      
-      #mobile-debug-console.visible {
-        display: block;
-      }
-      
-      #mobile-debug-console .debug-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 10px;
-        padding-bottom: 5px;
-        border-bottom: 1px solid #00ff00;
-      }
-      
-      #mobile-debug-console .debug-close {
-        background: #ff0000;
-        color: white;
-        border: none;
-        padding: 5px 10px;
-        cursor: pointer;
-        font-size: 14px;
-      }
-      
-      #mobile-debug-console .debug-content {
-        white-space: pre-wrap;
-        word-wrap: break-word;
-        max-height: calc(100vh - 60px);
-        overflow-y: auto;
-      }
-      
-      #mobile-debug-console .debug-line {
-        margin: 2px 0;
-        line-height: 1.4;
-      }
-      
-      #mobile-debug-console .debug-error {
-        color: #ff0000;
-      }
-      
-      #mobile-debug-console .debug-warn {
-        color: #ffff00;
-      }
-      
-      #mobile-debug-console .debug-info {
-        color: #00ffff;
-      }
-      
-      #mobile-debug-console .debug-log {
-        color: #00ff00;
-      }
+        /* Dev Mode Styles */
+        .dev-mode-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #d4af37;
+            border-radius: 10px;
+            padding: 10px;
+            color: #d4af37;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            z-index: 10000;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .dev-mode-toggle:hover {
+            background: rgba(212, 175, 55, 0.2);
+            transform: scale(1.05);
+        }
+        
+        .dev-mode-toggle.active {
+            background: rgba(212, 175, 55, 0.3);
+            border-color: #ffd700;
+        }
+        
+        .phone-simulator {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 200px;
+            height: 400px;
+            background: linear-gradient(135deg, #2c1810, #1a0f0a);
+            border: 3px solid #d4af37;
+            border-radius: 25px;
+            display: none;
+            z-index: 9999;
+            box-shadow: 0 0 30px rgba(212, 175, 55, 0.5);
+        }
+        
+        .phone-screen {
+            width: 100%;
+            height: 100%;
+            border-radius: 22px;
+            background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 60px;
+            color: #d4af37;
+            text-shadow: 2px 2px 0px #8b4513;
+            transition: transform 0.1s ease;
+        }
+        
+        .phone-controls {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            display: none;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 9998;
+        }
+        
+        .control-button {
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #d4af37;
+            border-radius: 8px;
+            padding: 10px 15px;
+            color: #d4af37;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 120px;
+            text-align: center;
+        }
+        
+        .control-button:hover {
+            background: rgba(212, 175, 55, 0.2);
+            transform: scale(1.05);
+        }
+        
+        .control-button:active {
+            transform: scale(0.95);
+        }
+        
+        .dev-info {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #d4af37;
+            border-radius: 10px;
+            padding: 15px;
+            color: #d4af37;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            display: none;
+            z-index: 9997;
+            max-width: 300px;
+        }
+        
+        .dev-info h3 {
+            margin: 0 0 10px 0;
+            color: #ffd700;
+        }
+        
+        .dev-info p {
+            margin: 5px 0;
+        }
+        
+        .gravity-indicator {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #d4af37;
+            border-radius: 10px;
+            padding: 10px;
+            color: #d4af37;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            display: none;
+            z-index: 9996;
+        }
+        
+        .gravity-arrow {
+            font-size: 24px;
+            text-align: center;
+            margin: 5px 0;
+        }
     </style>
   </head>
   <body>
@@ -142,15 +208,40 @@
       </div>
     </div>
     
-    <!-- Mobile Debug Console -->
-    <div id="mobile-debug-console">
-      <div class="debug-header">
-        <div>Mobile Debug Console</div>
-        <button class="debug-close" onclick="toggleMobileDebugConsole()">Close</button>
-      </div>
-      <div class="debug-content" id="debug-content">
-        <div class="debug-line debug-info">Mobile Debug Console Ready</div>
-        <div class="debug-line debug-info">Tap anywhere on the screen to toggle this console</div>
+    <!-- Dev Mode Elements -->
+    <div id="dev-mode-toggle" class="dev-mode-toggle">
+      <div>🔧 DEV MODE</div>
+    </div>
+    
+    <div id="phone-simulator" class="phone-simulator">
+      <div id="phone-screen" class="phone-screen">📱</div>
+    </div>
+    
+    <div id="phone-controls" class="phone-controls">
+      <div class="control-button" id="tilt-left">↶ Tilt Left</div>
+      <div class="control-button" id="tilt-right">↷ Tilt Right</div>
+      <div class="control-button" id="tilt-up">↗ Tilt Up</div>
+      <div class="control-button" id="tilt-down">↘ Tilt Down</div>
+      <div class="control-button" id="reset-tilt">🔄 Reset</div>
+    </div>
+    
+    <div id="dev-info" class="dev-info">
+      <h3>🔧 Dev Mode Active</h3>
+      <p><strong>Phone Simulator:</strong></p>
+      <p>• Use arrow keys or buttons to tilt</p>
+      <p>• Phone emoji shows current orientation</p>
+      <p>• Simulates gyroscope data for Unity</p>
+      <p><strong>Controls:</strong></p>
+      <p>• ← → Arrow keys: Tilt left/right</p>
+      <p>• ↑ ↓ Arrow keys: Tilt up/down</p>
+      <p>• R key: Reset orientation</p>
+    </div>
+    
+    <div id="gravity-indicator" class="gravity-indicator">
+      <div style="text-align: center; font-weight: bold;">Gravity Vector</div>
+      <div id="gravity-arrow" class="gravity-arrow">↓</div>
+      <div id="gravity-values" style="font-size: 10px; text-align: center;">
+        X: 0.00, Y: -1.00, Z: 0.00
       </div>
     </div>
     <script>
@@ -506,110 +597,6 @@
         }, 1000);
       }
 
-      // Mobile Debug Console Functions
-      let mobileDebugConsoleVisible = false;
-      let debugLogs = [];
-      let originalConsole = {
-        log: console.log,
-        error: console.error,
-        warn: console.warn,
-        info: console.info
-      };
-
-      function toggleMobileDebugConsole() {
-        const console = document.getElementById('mobile-debug-console');
-        if (console) {
-          mobileDebugConsoleVisible = !mobileDebugConsoleVisible;
-          if (mobileDebugConsoleVisible) {
-            console.classList.add('visible');
-            updateDebugConsole();
-          } else {
-            console.classList.remove('visible');
-          }
-        }
-      }
-
-      function addDebugLog(message, type = 'log') {
-        const timestamp = new Date().toLocaleTimeString();
-        const logEntry = {
-          message: `[${timestamp}] ${message}`,
-          type: type
-        };
-        debugLogs.push(logEntry);
-        
-        // Keep only last 100 logs
-        if (debugLogs.length > 100) {
-          debugLogs.shift();
-        }
-        
-        if (mobileDebugConsoleVisible) {
-          updateDebugConsole();
-        }
-      }
-
-      function updateDebugConsole() {
-        const content = document.getElementById('debug-content');
-        if (content) {
-          content.innerHTML = debugLogs.map(log => 
-            `<div class="debug-line debug-${log.type}">${log.message}</div>`
-          ).join('');
-          content.scrollTop = content.scrollHeight;
-        }
-      }
-
-      function setupMobileDebugConsole() {
-        if (isMobile) {
-          // Override console methods to capture logs
-          console.log = function(...args) {
-            originalConsole.log.apply(console, args);
-            addDebugLog(args.join(' '), 'log');
-          };
-          
-          console.error = function(...args) {
-            originalConsole.error.apply(console, args);
-            addDebugLog(args.join(' '), 'error');
-          };
-          
-          console.warn = function(...args) {
-            originalConsole.warn.apply(console, args);
-            addDebugLog(args.join(' '), 'warn');
-          };
-          
-          console.info = function(...args) {
-            originalConsole.info.apply(console, args);
-            addDebugLog(args.join(' '), 'info');
-          };
-
-          // Add tap listener to toggle console
-          document.addEventListener('touchstart', function(e) {
-            // Triple tap to toggle console
-            if (e.touches.length === 1) {
-              const now = Date.now();
-              if (!window.lastTapTime) window.lastTapTime = 0;
-              if (now - window.lastTapTime < 500) {
-                window.tapCount = (window.tapCount || 0) + 1;
-                if (window.tapCount >= 3) {
-                  toggleMobileDebugConsole();
-                  window.tapCount = 0;
-                }
-              } else {
-                window.tapCount = 1;
-              }
-              window.lastTapTime = now;
-            }
-          });
-
-          // Add keyboard shortcut for desktop testing
-          document.addEventListener('keydown', function(e) {
-            if (e.ctrlKey && e.shiftKey && e.key === 'D') {
-              toggleMobileDebugConsole();
-            }
-          });
-
-          addDebugLog('Mobile Debug Console initialized - Triple tap to toggle', 'info');
-        }
-      }
-
       // Check if device is mobile and handle desktop overlay
       function handleMobileOnlyDisplay() {
         const mobileOnlyOverlay = document.getElementById('mobile-only-overlay');
@@ -688,9 +675,6 @@
 
       // Handle mobile-only display
       handleMobileOnlyDisplay();
-      
-      // Setup mobile debug console
-      setupMobileDebugConsole();
       
       // Lock orientation to portrait on mobile immediately
       if (isMobile) {
@@ -961,6 +945,182 @@
       } else {
         // On desktop, hide the loading bar
         document.querySelector("#unity-loading-bar").style.display = "none";
+      }
+
+      // Dev Mode Functionality
+      let devModeActive = false;
+      let phoneRotation = { x: 0, y: 0, z: 0 }; // Simulated phone rotation
+      let gravityVector = { x: 0, y: -1, z: 0 }; // Simulated gravity vector
+      
+      // Dev mode toggle
+      document.getElementById('dev-mode-toggle').addEventListener('click', function() {
+        devModeActive = !devModeActive;
+        this.classList.toggle('active');
+        
+        // Show/hide dev mode elements
+        document.getElementById('phone-simulator').style.display = devModeActive ? 'block' : 'none';
+        document.getElementById('phone-controls').style.display = devModeActive ? 'flex' : 'none';
+        document.getElementById('dev-info').style.display = devModeActive ? 'block' : 'none';
+        document.getElementById('gravity-indicator').style.display = devModeActive ? 'block' : 'none';
+        
+        if (devModeActive) {
+          console.log('🔧 Dev Mode Activated - Phone simulator enabled');
+          // Start sending simulated gyroscope data
+          startDevModeGyroscope();
+        } else {
+          console.log('🔧 Dev Mode Deactivated');
+          stopDevModeGyroscope();
+        }
+      });
+      
+      // Phone control buttons
+      document.getElementById('tilt-left').addEventListener('click', () => tiltPhone(-15, 0));
+      document.getElementById('tilt-right').addEventListener('click', () => tiltPhone(15, 0));
+      document.getElementById('tilt-up').addEventListener('click', () => tiltPhone(0, 15));
+      document.getElementById('tilt-down').addEventListener('click', () => tiltPhone(0, -15));
+      document.getElementById('reset-tilt').addEventListener('click', () => resetPhoneTilt());
+      
+      // Keyboard controls
+      document.addEventListener('keydown', function(event) {
+        if (!devModeActive) return;
+        
+        switch(event.key) {
+          case 'ArrowLeft':
+            event.preventDefault();
+            tiltPhone(-15, 0);
+            break;
+          case 'ArrowRight':
+            event.preventDefault();
+            tiltPhone(15, 0);
+            break;
+          case 'ArrowUp':
+            event.preventDefault();
+            tiltPhone(0, 15);
+            break;
+          case 'ArrowDown':
+            event.preventDefault();
+            tiltPhone(0, -15);
+            break;
+          case 'r':
+          case 'R':
+            event.preventDefault();
+            resetPhoneTilt();
+            break;
+        }
+      });
+      
+      function tiltPhone(deltaX, deltaY) {
+        phoneRotation.x += deltaX;
+        phoneRotation.y += deltaY;
+        
+        // Clamp rotation values
+        phoneRotation.x = Math.max(-45, Math.min(45, phoneRotation.x));
+        phoneRotation.y = Math.max(-45, Math.min(45, phoneRotation.y));
+        
+        // Update phone visual
+        updatePhoneVisual();
+        
+        // Update gravity vector based on rotation
+        updateGravityVector();
+        
+        console.log(`📱 Phone tilted: X=${phoneRotation.x.toFixed(1)}°, Y=${phoneRotation.y.toFixed(1)}°`);
+      }
+      
+      function resetPhoneTilt() {
+        phoneRotation = { x: 0, y: 0, z: 0 };
+        gravityVector = { x: 0, y: -1, z: 0 };
+        updatePhoneVisual();
+        updateGravityVector();
+        console.log('📱 Phone orientation reset');
+      }
+      
+      function updatePhoneVisual() {
+        const phoneScreen = document.getElementById('phone-screen');
+        const phoneSimulator = document.getElementById('phone-simulator');
+        
+        // Apply rotation to phone
+        const rotationX = phoneRotation.y;
+        const rotationY = phoneRotation.x;
+        const rotationZ = phoneRotation.z;
+        
+        phoneSimulator.style.transform = `translate(-50%, -50%) rotateX(${rotationX}deg) rotateY(${rotationY}deg) rotateZ(${rotationZ}deg)`;
+        
+        // Update phone emoji based on orientation
+        let emoji = '📱';
+        if (Math.abs(phoneRotation.x) > 30) {
+          emoji = phoneRotation.x > 0 ? '📱↷' : '📱↶';
+        } else if (Math.abs(phoneRotation.y) > 30) {
+          emoji = phoneRotation.y > 0 ? '📱↗' : '📱↘';
+        }
+        phoneScreen.textContent = emoji;
+      }
+      
+      function updateGravityVector() {
+        // Convert phone rotation to gravity vector
+        const radiansX = phoneRotation.x * Math.PI / 180;
+        const radiansY = phoneRotation.y * Math.PI / 180;
+        
+        // Calculate gravity vector based on phone orientation
+        gravityVector.x = Math.sin(radiansX) * Math.cos(radiansY);
+        gravityVector.y = -Math.cos(radiansX) * Math.cos(radiansY);
+        gravityVector.z = Math.sin(radiansY);
+        
+        // Update gravity indicator
+        updateGravityIndicator();
+        
+        // Send to Unity if available
+        if (gameInstance && gameInstance.SendMessage) {
+          const gravityString = `${gravityVector.x},${gravityVector.y},${gravityVector.z}`;
+          gameInstance.SendMessage('Orientation Handler', 'SetMotionDataString', gravityString);
+        }
+      }
+      
+      function updateGravityIndicator() {
+        const gravityArrow = document.getElementById('gravity-arrow');
+        const gravityValues = document.getElementById('gravity-values');
+        
+        // Determine arrow direction
+        let arrow = '↓';
+        const absX = Math.abs(gravityVector.x);
+        const absY = Math.abs(gravityVector.y);
+        
+        if (absX > absY) {
+          arrow = gravityVector.x > 0 ? '→' : '←';
+        } else {
+          arrow = gravityVector.y > 0 ? '↑' : '↓';
+        }
+        
+        // Add diagonal arrows for more precise indication
+        if (absX > 0.3 && absY > 0.3) {
+          if (gravityVector.x > 0 && gravityVector.y > 0) arrow = '↗';
+          else if (gravityVector.x > 0 && gravityVector.y < 0) arrow = '↘';
+          else if (gravityVector.x < 0 && gravityVector.y > 0) arrow = '↖';
+          else if (gravityVector.x < 0 && gravityVector.y < 0) arrow = '↙';
+        }
+        
+        gravityArrow.textContent = arrow;
+        gravityValues.textContent = `X: ${gravityVector.x.toFixed(2)}, Y: ${gravityVector.y.toFixed(2)}, Z: ${gravityVector.z.toFixed(2)}`;
+      }
+      
+      let devModeInterval = null;
+      
+      function startDevModeGyroscope() {
+        if (devModeInterval) clearInterval(devModeInterval);
+        
+        // Send gyroscope data to Unity every 100ms
+        devModeInterval = setInterval(() => {
+          if (gameInstance && gameInstance.SendMessage) {
+            const gravityString = `${gravityVector.x},${gravityVector.y},${gravityVector.z}`;
+            gameInstance.SendMessage('Orientation Handler', 'SetMotionDataString', gravityString);
+          }
+        }, 100);
+      }
+      
+      function stopDevModeGyroscope() {
+        if (devModeInterval) {
+          clearInterval(devModeInterval);
+          devModeInterval = null;
+        }
       }
 
     </script>
