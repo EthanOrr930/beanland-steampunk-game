@@ -2035,6 +2035,8 @@ MonoBehaviour:
   gravityMultiplier: 9.8
   gSmoothingFactor: 100
   gravityThresholdAngle: 45
+  useMultiplayerGravity: 0
+  multiplayerGravityController: {fileID: 0}
   useGyroscopeGravity: 1
   showGravityDebugLine: 1
   debugLineLength: 3
@@ -2144,7 +2146,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   usePhoneOrientation: 1
-  showDebugInfo: 1
+  showDebugInfo: 0
   smoothingFactor: 2
   currentOrientation: 0
   smoothedOrientation: 0
@@ -2418,33 +2420,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   levelName: NewLevel
+  objectsToExport: []
+  playerObject: {fileID: 0}
   exportPath: Levels
   prettyPrintJson: 1
-  exportPrefabs: 1
-  exportTransforms: 1
-  exportButtonConnections: 1
-  exportSpringJoints: 1
-  exportPlayerSettings: 1
-  prefabNames:
-  - Wall
-  - Platform
-  - Platform_2
-  - Balloon
-  - Balloon(NoString)
-  - EspressoMachine
-  - Grinder
-  - FlameThrower
-  - Button
-  - NoDashZone
-  - Walls_3
-  - Walls_7
-  - Walls_8
-  - Pipe
-  - SwitchingWall
-  excludeObjects: []
-  excludeTags:
-  - MainCamera
-  - UICamera
+  autoFindPlayer: 1
   showDebugLogs: 1
 --- !u!114 &1391113715
 MonoBehaviour:
