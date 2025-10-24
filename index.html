@@ -892,6 +892,16 @@
       function checkExistingPermissionAndLoad() {
         console.log('Checking if motion permission already granted...');
         
+        // If dev mode is active, skip motion check and load directly
+        if (devModeActive) {
+          console.log('🔧 Dev mode active - skipping motion check, loading Unity directly');
+          updatePermissionUIForAutoLoad();
+          motionPermissionGranted = true;
+          startMotionDetection();
+          startLoadingUnity();
+          return;
+        }
+        
         let motionDetected = false;
         let testTimeout = null;
         
@@ -1217,7 +1227,8 @@
           // Load Unity if not already loaded
           if (!gameInstance) {
             console.log('🎮 Unity not loaded yet, starting Unity load...');
-            loadUnityForDevMode();
+            // Trigger the permission check which will now skip motion check in dev mode
+            checkExistingPermissionAndLoad();
           } else {
             console.log('🎮 Unity already loaded, sending initial data...');
             // Send initial gyroscope data to Unity
