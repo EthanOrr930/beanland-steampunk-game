@@ -1367,9 +1367,12 @@
         phoneRotation.x += deltaX;
         phoneRotation.y += deltaY;
         
-        // Clamp rotation values
-        phoneRotation.x = Math.max(-90, Math.min(90, phoneRotation.x));
-        phoneRotation.y = Math.max(-90, Math.min(90, phoneRotation.y));
+        // Allow unlimited rotation (360+ degrees)
+        // Keep values within reasonable range but allow wrapping
+        if (phoneRotation.x > 360) phoneRotation.x -= 360;
+        if (phoneRotation.x < -360) phoneRotation.x += 360;
+        if (phoneRotation.y > 360) phoneRotation.y -= 360;
+        if (phoneRotation.y < -360) phoneRotation.y += 360;
         
         // Update phone visual
         updatePhoneVisual();
@@ -1392,24 +1395,20 @@
         const phoneScreen = document.getElementById('phone-screen');
         const phoneSimulator = document.getElementById('phone-simulator');
         
-        // Apply rotation to phone (simplified - just Z rotation for left/right)
+        // Apply full 360-degree rotation to phone
         const rotationZ = phoneRotation.x;
         
         phoneSimulator.style.transform = `translateY(-50%) rotateZ(${rotationZ}deg)`;
         
-        // Update phone emoji based on orientation
-        let emoji = '📱';
-        if (Math.abs(phoneRotation.x) > 15) {
-          emoji = phoneRotation.x > 0 ? '📱↷' : '📱↶';
-        }
-        phoneScreen.textContent = emoji;
+        // Keep phone emoji simple - no arrows
+        phoneScreen.textContent = '📱';
       }
       
       function updateGravityVector() {
-        // Convert phone rotation to gravity vector (simplified for left/right)
+        // Convert phone rotation to gravity vector (full 360-degree support)
         const radiansX = phoneRotation.x * Math.PI / 180;
         
-        // Calculate gravity vector based on rotation (simplified)
+        // Calculate gravity vector based on rotation (full 360-degree)
         gravityVector.x = Math.sin(radiansX);
         gravityVector.y = -Math.cos(radiansX);
         gravityVector.z = 0;
