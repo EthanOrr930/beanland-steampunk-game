@@ -241,15 +241,15 @@
       <div id="phone-screen" class="phone-screen">📱</div>
     </div>
     
-    <div id="phone-controls" class="phone-controls">
+    <div id="phone-controls" class="phone-controls" style="display: none;">
       <div class="control-button" id="tilt-left">‹</div>
       <div class="control-button" id="tilt-right">›</div>
     </div>
     
-    <div id="dev-info" class="dev-info">
+    <div id="dev-info" class="dev-info" style="display: none;">
       <h3>🔧 Dev Mode Active</h3>
       <p><strong>Phone Simulator:</strong></p>
-      <p>• Use arrow keys or buttons to tilt</p>
+      <p>• Use arrow keys to tilt</p>
       <p>• Phone emoji shows current orientation</p>
       <p>• Simulates gyroscope data for Unity</p>
       <p><strong>Controls:</strong></p>
@@ -1162,22 +1162,15 @@
           console.error('❌ Phone simulator element not found');
         }
         
+        // Keep phone controls hidden - only use arrow keys
         if (phoneControls) {
-          if (devModeActive) {
-            phoneControls.classList.add('show');
-            phoneControls.style.display = 'flex';
-            console.log('🎮 Phone controls shown');
-          } else {
-            phoneControls.classList.remove('show');
-            phoneControls.style.display = 'none';
-            console.log('🎮 Phone controls hidden');
-          }
-        } else {
-          console.error('❌ Phone controls element not found');
+          phoneControls.style.display = 'none';
+          console.log('🎮 Phone controls hidden - using arrow keys only');
         }
         
-        if (devInfo) devInfo.style.display = devModeActive ? 'block' : 'none';
-        if (gravityIndicator) gravityIndicator.style.display = devModeActive ? 'block' : 'none';
+        // Keep dev info and gravity indicator hidden
+        if (devInfo) devInfo.style.display = 'none';
+        if (gravityIndicator) gravityIndicator.style.display = 'none';
         
         // Adjust game container for dev mode
         const gameContainer = document.getElementById('unity-container');
@@ -1187,6 +1180,13 @@
           if (mobileOnlyOverlay) {
             mobileOnlyOverlay.style.display = 'none';
             console.log('📱 Hidden mobile-only overlay for dev mode');
+          }
+          
+          // Show mobile permission overlay for dev mode (like on mobile)
+          const mobilePermissionOverlay = document.getElementById('mobile-permission-overlay');
+          if (mobilePermissionOverlay) {
+            mobilePermissionOverlay.style.display = 'flex';
+            console.log('📱 Showing mobile permission overlay for dev mode');
           }
           
           // Simulate mobile device
@@ -1234,6 +1234,13 @@
           if (mobileOnlyOverlay) {
             mobileOnlyOverlay.style.display = 'flex';
             console.log('📱 Showing mobile-only overlay');
+          }
+          
+          // Hide mobile permission overlay when dev mode is deactivated
+          const mobilePermissionOverlay = document.getElementById('mobile-permission-overlay');
+          if (mobilePermissionOverlay) {
+            mobilePermissionOverlay.style.display = 'none';
+            console.log('📱 Hiding mobile permission overlay');
           }
           
           if (gameContainer) {
