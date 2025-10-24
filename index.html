@@ -982,6 +982,44 @@
         console.error('❌ Dev mode toggle not found');
       }
       
+      // Function to manually start Unity if not loaded
+      function tryStartUnity() {
+        console.log('🎮 Attempting to start Unity manually...');
+        
+        // Check if Unity loader is available
+        if (typeof createUnityInstance === 'function') {
+          console.log('✅ Unity loader found, attempting to create instance...');
+          // This would need the actual Unity configuration
+          // For now, just log that we found the loader
+        } else {
+          console.log('❌ Unity loader not found');
+        }
+        
+        // Try to trigger Unity loading by simulating a mobile device
+        const event = new Event('resize');
+        window.dispatchEvent(event);
+        console.log('📱 Dispatched resize event to trigger Unity');
+        
+        // Try to trigger Unity loading by checking for Unity scripts
+        const unityScripts = document.querySelectorAll('script[src*="unity"], script[src*="BeanLand"]');
+        console.log('🔍 Found Unity scripts:', unityScripts.length);
+        
+        // Try to manually trigger Unity loading
+        if (window.unityInstance) {
+          console.log('✅ Found window.unityInstance');
+        } else {
+          console.log('❌ No window.unityInstance found');
+        }
+        
+        // Check if Unity canvas is ready
+        const canvas = document.getElementById('unity-canvas');
+        if (canvas && canvas.getContext) {
+          console.log('✅ Unity canvas is ready');
+        } else {
+          console.log('❌ Unity canvas not ready');
+        }
+      }
+      
       // Function to simulate mobile device
       function simulateMobileDevice() {
         // Override user agent to appear as mobile
@@ -1122,20 +1160,28 @@
             console.log('❌ Unity canvas not found');
           }
           
-          // Try to force Unity to show the game
+          // Force Unity container to be visible immediately
+          if (unityContainer) {
+            unityContainer.style.display = 'block';
+            unityContainer.style.visibility = 'visible';
+            console.log('📱 Forced Unity container to be visible');
+          }
+          if (unityCanvas) {
+            unityCanvas.style.display = 'block';
+            unityCanvas.style.visibility = 'visible';
+            console.log('📱 Forced Unity canvas to be visible');
+          }
+          
+          // Wait for Unity to load and then try to start it
           setTimeout(() => {
-            console.log('🔧 Attempting to force Unity game display...');
-            if (unityContainer) {
-              unityContainer.style.display = 'block';
-              unityContainer.style.visibility = 'visible';
-              console.log('📱 Forced Unity container to be visible');
+            console.log('🔧 Checking Unity load status...');
+            if (gameInstance) {
+              console.log('✅ Unity game instance now found!');
+            } else {
+              console.log('❌ Unity game instance still not found - trying to start Unity...');
+              tryStartUnity();
             }
-            if (unityCanvas) {
-              unityCanvas.style.display = 'block';
-              unityCanvas.style.visibility = 'visible';
-              console.log('📱 Forced Unity canvas to be visible');
-            }
-          }, 500);
+          }, 2000);
         } else {
           if (gameContainer) {
             gameContainer.classList.remove('dev-mode-active');
