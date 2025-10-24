@@ -30,6 +30,13 @@
             transition: all 0.3s ease;
         }
         
+        /* Hide dev mode button on mobile devices */
+        @media (max-width: 768px) {
+            .dev-mode-toggle {
+                display: none !important;
+            }
+        }
+        
         .dev-mode-toggle:hover {
             background: rgba(212, 175, 55, 0.2);
             transform: scale(1.05);
@@ -984,6 +991,12 @@
       const devModeToggle = document.getElementById('dev-mode-toggle');
       if (devModeToggle) {
         console.log('✅ Dev mode toggle found');
+        
+        // Hide dev mode button on mobile devices
+        if (isMobile) {
+          devModeToggle.style.display = 'none';
+          console.log('📱 Dev mode button hidden on mobile device');
+        }
       } else {
         console.error('❌ Dev mode toggle not found');
       }
