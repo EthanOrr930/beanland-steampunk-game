@@ -1011,6 +1011,9 @@
         });
         
         console.log('📱 Simulating mobile device');
+        console.log('📱 User Agent:', navigator.userAgent);
+        console.log('📱 Screen size:', screen.width, 'x', screen.height);
+        console.log('📱 Window size:', window.innerWidth, 'x', window.innerHeight);
       }
       
       // Dev mode toggle
@@ -1090,11 +1093,49 @@
             gameInstance.SendMessage('Orientation Handler', 'SetDevMode', 'true');
           }
           
-          // Force page refresh to apply mobile simulation
+          // Don't refresh - let's debug what's happening
+          console.log('🔧 Mobile simulation applied, checking Unity state...');
+          
+          // Check if Unity is loaded
+          if (gameInstance) {
+            console.log('✅ Unity game instance found');
+          } else {
+            console.log('❌ Unity game instance not found - may need to wait for load');
+          }
+          
+          // Check Unity container visibility
+          const unityContainer = document.getElementById('unity-container');
+          if (unityContainer) {
+            console.log('✅ Unity container found');
+            console.log('📱 Unity container display:', getComputedStyle(unityContainer).display);
+            console.log('📱 Unity container visibility:', getComputedStyle(unityContainer).visibility);
+          } else {
+            console.log('❌ Unity container not found');
+          }
+          
+          // Check if Unity canvas exists
+          const unityCanvas = document.getElementById('unity-canvas');
+          if (unityCanvas) {
+            console.log('✅ Unity canvas found');
+            console.log('📱 Canvas size:', unityCanvas.width, 'x', unityCanvas.height);
+          } else {
+            console.log('❌ Unity canvas not found');
+          }
+          
+          // Try to force Unity to show the game
           setTimeout(() => {
-            console.log('🔄 Refreshing page to apply mobile simulation');
-            window.location.reload();
-          }, 1000);
+            console.log('🔧 Attempting to force Unity game display...');
+            if (unityContainer) {
+              unityContainer.style.display = 'block';
+              unityContainer.style.visibility = 'visible';
+              console.log('📱 Forced Unity container to be visible');
+            }
+            if (unityCanvas) {
+              unityCanvas.style.display = 'block';
+              unityCanvas.style.visibility = 'visible';
+              console.log('📱 Forced Unity canvas to be visible');
+            }
+          }, 500);
         } else {
           if (gameContainer) {
             gameContainer.classList.remove('dev-mode-active');
