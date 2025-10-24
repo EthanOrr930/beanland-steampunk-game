@@ -1182,6 +1182,13 @@
         // Adjust game container for dev mode
         const gameContainer = document.getElementById('unity-container');
         if (devModeActive) {
+          // Hide mobile-only overlay when dev mode is active
+          const mobileOnlyOverlay = document.getElementById('mobile-only-overlay');
+          if (mobileOnlyOverlay) {
+            mobileOnlyOverlay.style.display = 'none';
+            console.log('📱 Hidden mobile-only overlay for dev mode');
+          }
+          
           // Simulate mobile device
           simulateMobileDevice();
           
@@ -1222,6 +1229,13 @@
             console.log('📱 Forced Unity canvas to be visible');
           }
         } else {
+          // Show mobile-only overlay when dev mode is deactivated
+          const mobileOnlyOverlay = document.getElementById('mobile-only-overlay');
+          if (mobileOnlyOverlay) {
+            mobileOnlyOverlay.style.display = 'flex';
+            console.log('📱 Showing mobile-only overlay');
+          }
+          
           if (gameContainer) {
             gameContainer.classList.remove('dev-mode-active');
           }
