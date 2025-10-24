@@ -43,8 +43,8 @@
         .phone-simulator {
             position: fixed;
             top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
+            right: 50px;
+            transform: translateY(-50%);
             width: 200px;
             height: 400px;
             background: linear-gradient(135deg, #2c1810, #1a0f0a);
@@ -71,8 +71,9 @@
         
         .phone-controls {
             position: fixed;
-            top: 20px;
-            left: 20px;
+            top: 50%;
+            right: 280px;
+            transform: translateY(-50%);
             display: none;
             flex-direction: column;
             gap: 10px;
@@ -140,6 +141,17 @@
             font-size: 12px;
             display: none;
             z-index: 9996;
+        }
+        
+        /* Game container adjustments for dev mode */
+        .unity-desktop.dev-mode-active {
+            width: calc(100% - 350px) !important;
+            margin-right: 350px;
+        }
+        
+        .unity-desktop.dev-mode-active #unity-canvas {
+            width: 100% !important;
+            height: auto !important;
         }
         
         .gravity-arrow {
@@ -963,11 +975,15 @@
         document.getElementById('dev-info').style.display = devModeActive ? 'block' : 'none';
         document.getElementById('gravity-indicator').style.display = devModeActive ? 'block' : 'none';
         
+        // Adjust game container for dev mode
+        const gameContainer = document.getElementById('unity-container');
         if (devModeActive) {
+          gameContainer.classList.add('dev-mode-active');
           console.log('🔧 Dev Mode Activated - Phone simulator enabled');
           // Start sending simulated gyroscope data
           startDevModeGyroscope();
         } else {
+          gameContainer.classList.remove('dev-mode-active');
           console.log('🔧 Dev Mode Deactivated');
           stopDevModeGyroscope();
         }
@@ -1043,7 +1059,7 @@
         const rotationY = phoneRotation.x;
         const rotationZ = phoneRotation.z;
         
-        phoneSimulator.style.transform = `translate(-50%, -50%) rotateX(${rotationX}deg) rotateY(${rotationY}deg) rotateZ(${rotationZ}deg)`;
+        phoneSimulator.style.transform = `translateY(-50%) rotateX(${rotationX}deg) rotateY(${rotationY}deg) rotateZ(${rotationZ}deg)`;
         
         // Update phone emoji based on orientation
         let emoji = '📱';
