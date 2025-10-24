@@ -971,6 +971,7 @@
       let devModeActive = false;
       let phoneRotation = { x: 0, y: 0, z: 0 }; // Simulated phone rotation
       let gravityVector = { x: 0, y: -1, z: 0 }; // Simulated gravity vector
+      let devModeGyroscopeInterval = null;
       
       // Initialize dev mode elements
       console.log('🔧 Initializing dev mode elements...');
@@ -979,6 +980,37 @@
         console.log('✅ Dev mode toggle found');
       } else {
         console.error('❌ Dev mode toggle not found');
+      }
+      
+      // Function to simulate mobile device
+      function simulateMobileDevice() {
+        // Override user agent to appear as mobile
+        Object.defineProperty(navigator, 'userAgent', {
+          get: function() { return 'Mozilla/5.0 (iPhone; CPU iPhone OS 14_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0 Mobile/15E148 Safari/604.1'; },
+          configurable: true
+        });
+        
+        // Override screen properties to appear as mobile
+        Object.defineProperty(screen, 'width', {
+          get: function() { return 375; },
+          configurable: true
+        });
+        Object.defineProperty(screen, 'height', {
+          get: function() { return 812; },
+          configurable: true
+        });
+        
+        // Override window dimensions
+        Object.defineProperty(window, 'innerWidth', {
+          get: function() { return 375; },
+          configurable: true
+        });
+        Object.defineProperty(window, 'innerHeight', {
+          get: function() { return 812; },
+          configurable: true
+        });
+        
+        console.log('📱 Simulating mobile device');
       }
       
       // Dev mode toggle
@@ -1036,12 +1068,33 @@
         // Adjust game container for dev mode
         const gameContainer = document.getElementById('unity-container');
         if (devModeActive) {
+          // Simulate mobile device
+          simulateMobileDevice();
+          
           if (gameContainer) {
             gameContainer.classList.add('dev-mode-active');
           }
           console.log('🔧 Dev Mode Activated - Phone simulator enabled');
-          // Start sending simulated gyroscope data
+          
+          // Start sending simulated gyroscope data immediately
           startDevModeGyroscope();
+          
+          // Force Unity to reload/restart with mobile detection
+          if (gameInstance && gameInstance.SendMessage) {
+            console.log('🎮 Sending initial gyroscope data to Unity');
+            const gravityString = `${gravityVector.x},${gravityVector.y},${gravityVector.z}`;
+            gameInstance.SendMessage('Orientation Handler', 'SetMotionDataString', gravityString);
+            
+            // Try to trigger mobile mode in Unity
+            gameInstance.SendMessage('Orientation Handler', 'EnableMobileMode', 'true');
+            gameInstance.SendMessage('Orientation Handler', 'SetDevMode', 'true');
+          }
+          
+          // Force page refresh to apply mobile simulation
+          setTimeout(() => {
+            console.log('🔄 Refreshing page to apply mobile simulation');
+            window.location.reload();
+          }, 1000);
         } else {
           if (gameContainer) {
             gameContainer.classList.remove('dev-mode-active');
@@ -1183,13 +1236,22 @@
       function startDevModeGyroscope() {
         if (devModeInterval) clearInterval(devModeInterval);
         
-        // Send gyroscope data to Unity every 100ms
+        // Send initial gyroscope data immediately
+        if (gameInstance && gameInstance.SendMessage) {
+          const gravityString = `${gravityVector.x},${gravityVector.y},${gravityVector.z}`;
+          gameInstance.SendMessage('Orientation Handler', 'SetMotionDataString', gravityString);
+          console.log('📱 Initial gyroscope data sent:', gravityString);
+        }
+        
+        // Send gyroscope data to Unity every 50ms for more responsive control
         devModeInterval = setInterval(() => {
           if (gameInstance && gameInstance.SendMessage) {
             const gravityString = `${gravityVector.x},${gravityVector.y},${gravityVector.z}`;
             gameInstance.SendMessage('Orientation Handler', 'SetMotionDataString', gravityString);
           }
-        }, 100);
+        }, 50);
+        
+        console.log('📱 Dev mode gyroscope started');
       }
       
       function stopDevModeGyroscope() {
@@ -1197,6 +1259,7 @@
           clearInterval(devModeInterval);
           devModeInterval = null;
         }
+        console.log('📱 Dev mode gyroscope stopped');
       }
 
     </script>
