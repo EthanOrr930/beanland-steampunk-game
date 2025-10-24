@@ -55,6 +55,10 @@
             box-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
         }
         
+        .phone-simulator.show {
+            display: block !important;
+        }
+        
         .phone-screen {
             width: 100%;
             height: 100%;
@@ -78,6 +82,10 @@
             flex-direction: row;
             gap: 15px;
             z-index: 9998;
+        }
+        
+        .phone-controls.show {
+            display: flex !important;
         }
         
         .control-button {
@@ -987,8 +995,41 @@
         const devInfo = document.getElementById('dev-info');
         const gravityIndicator = document.getElementById('gravity-indicator');
         
-        if (phoneSimulator) phoneSimulator.style.display = devModeActive ? 'block' : 'none';
-        if (phoneControls) phoneControls.style.display = devModeActive ? 'flex' : 'none';
+        console.log('🔧 Elements found:', {
+          phoneSimulator: !!phoneSimulator,
+          phoneControls: !!phoneControls,
+          devInfo: !!devInfo,
+          gravityIndicator: !!gravityIndicator
+        });
+        
+        if (phoneSimulator) {
+          if (devModeActive) {
+            phoneSimulator.classList.add('show');
+            phoneSimulator.style.display = 'block';
+            console.log('📱 Phone simulator shown');
+          } else {
+            phoneSimulator.classList.remove('show');
+            phoneSimulator.style.display = 'none';
+            console.log('📱 Phone simulator hidden');
+          }
+        } else {
+          console.error('❌ Phone simulator element not found');
+        }
+        
+        if (phoneControls) {
+          if (devModeActive) {
+            phoneControls.classList.add('show');
+            phoneControls.style.display = 'flex';
+            console.log('🎮 Phone controls shown');
+          } else {
+            phoneControls.classList.remove('show');
+            phoneControls.style.display = 'none';
+            console.log('🎮 Phone controls hidden');
+          }
+        } else {
+          console.error('❌ Phone controls element not found');
+        }
+        
         if (devInfo) devInfo.style.display = devModeActive ? 'block' : 'none';
         if (gravityIndicator) gravityIndicator.style.display = devModeActive ? 'block' : 'none';
         
