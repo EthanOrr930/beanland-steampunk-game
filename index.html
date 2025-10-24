@@ -964,34 +964,62 @@
       let phoneRotation = { x: 0, y: 0, z: 0 }; // Simulated phone rotation
       let gravityVector = { x: 0, y: -1, z: 0 }; // Simulated gravity vector
       
+      // Initialize dev mode elements
+      console.log('🔧 Initializing dev mode elements...');
+      const devModeToggle = document.getElementById('dev-mode-toggle');
+      if (devModeToggle) {
+        console.log('✅ Dev mode toggle found');
+      } else {
+        console.error('❌ Dev mode toggle not found');
+      }
+      
       // Dev mode toggle
       document.getElementById('dev-mode-toggle').addEventListener('click', function() {
+        console.log('🔧 Dev mode button clicked!');
         devModeActive = !devModeActive;
         this.classList.toggle('active');
         
+        console.log('🔧 Dev mode toggled:', devModeActive);
+        
         // Show/hide dev mode elements
-        document.getElementById('phone-simulator').style.display = devModeActive ? 'block' : 'none';
-        document.getElementById('phone-controls').style.display = devModeActive ? 'flex' : 'none';
-        document.getElementById('dev-info').style.display = devModeActive ? 'block' : 'none';
-        document.getElementById('gravity-indicator').style.display = devModeActive ? 'block' : 'none';
+        const phoneSimulator = document.getElementById('phone-simulator');
+        const phoneControls = document.getElementById('phone-controls');
+        const devInfo = document.getElementById('dev-info');
+        const gravityIndicator = document.getElementById('gravity-indicator');
+        
+        if (phoneSimulator) phoneSimulator.style.display = devModeActive ? 'block' : 'none';
+        if (phoneControls) phoneControls.style.display = devModeActive ? 'flex' : 'none';
+        if (devInfo) devInfo.style.display = devModeActive ? 'block' : 'none';
+        if (gravityIndicator) gravityIndicator.style.display = devModeActive ? 'block' : 'none';
         
         // Adjust game container for dev mode
         const gameContainer = document.getElementById('unity-container');
         if (devModeActive) {
-          gameContainer.classList.add('dev-mode-active');
+          if (gameContainer) {
+            gameContainer.classList.add('dev-mode-active');
+          }
           console.log('🔧 Dev Mode Activated - Phone simulator enabled');
           // Start sending simulated gyroscope data
           startDevModeGyroscope();
         } else {
-          gameContainer.classList.remove('dev-mode-active');
+          if (gameContainer) {
+            gameContainer.classList.remove('dev-mode-active');
+          }
           console.log('🔧 Dev Mode Deactivated');
           stopDevModeGyroscope();
         }
       });
       
       // Phone control buttons
-      document.getElementById('tilt-left').addEventListener('click', () => tiltPhone(-5, 0));
-      document.getElementById('tilt-right').addEventListener('click', () => tiltPhone(5, 0));
+      const tiltLeftBtn = document.getElementById('tilt-left');
+      const tiltRightBtn = document.getElementById('tilt-right');
+      
+      if (tiltLeftBtn) {
+        tiltLeftBtn.addEventListener('click', () => tiltPhone(-5, 0));
+      }
+      if (tiltRightBtn) {
+        tiltRightBtn.addEventListener('click', () => tiltPhone(5, 0));
+      }
       
       // Keyboard controls
       document.addEventListener('keydown', function(event) {
