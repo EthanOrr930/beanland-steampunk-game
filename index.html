@@ -320,8 +320,13 @@
         currentOrientation = getDeviceOrientation();
         
         if (gameInstance && gameInstance.SendMessage) {
-          console.log('Sending orientation data to Unity:', currentOrientation);
-          gameInstance.SendMessage('Orientation Handler', 'SetOrientationData', currentOrientation);
+          try {
+            // Try to send orientation data, but don't spam console
+            gameInstance.SendMessage('Orientation Handler', 'SetOrientationData', currentOrientation);
+          } catch (error) {
+            // Silently handle errors - Unity might not be ready yet
+            console.log('Unity not ready for orientation data yet');
+          }
         }
       }
 
@@ -331,18 +336,23 @@
         currentMotion = { x: x, y: y, z: z };
         
         if (gameInstance && gameInstance.SendMessage) {
-          // Target the correct GameObject name: "Orientation Handler"
-          const motionString = `${x},${y},${z}`;
-          
-          // Log occasionally (every 2 seconds) to avoid spam
-          const now = Date.now();
-          if (now - lastMotionLogTime > 2000) {
-            console.log('[GRAVITY] Phone tilt detected - controlling gravity:', motionString);
-            lastMotionLogTime = now;
+          try {
+            // Target the correct GameObject name: "Orientation Handler"
+            const motionString = `${x},${y},${z}`;
+            
+            // Log occasionally (every 2 seconds) to avoid spam
+            const now = Date.now();
+            if (now - lastMotionLogTime > 2000) {
+              console.log('[GRAVITY] Phone tilt detected - controlling gravity:', motionString);
+              lastMotionLogTime = now;
+            }
+            
+            // Send to Unity
+            gameInstance.SendMessage('Orientation Handler', 'SetMotionDataString', motionString);
+          } catch (error) {
+            // Silently handle errors - Unity might not be ready yet
+            console.log('Unity not ready for motion data yet');
           }
-          
-          // Send to Unity
-          gameInstance.SendMessage('Orientation Handler', 'SetMotionDataString', motionString);
         } else {
           console.log('[GRAVITY] ERROR: No Unity instance available');
         }
@@ -619,7 +629,7 @@
         // Set up periodic updates
         setInterval(function() {
           sendOrientationToUnity();
-        }, 100); // Update every 100ms
+        }, 1000); // Update every 1 second to reduce spam
 
         // Request motion permission after a short delay to ensure Unity is ready
         setTimeout(function() {
@@ -870,14 +880,17 @@
               unityInstance.SetFullscreen(1);
             };
             
-            // Initialize device controls after Unity loads
-            initializeDeviceControls();
-            
-            // Update status display
-            updateUnityStatus();
-            
-            // Auto-enter fullscreen after Unity loads (permission already granted at this point)
-            enterFullscreenDirectly();
+            // Wait a moment for Unity to fully initialize before sending messages
+            setTimeout(() => {
+              // Initialize device controls after Unity loads
+              initializeDeviceControls();
+              
+              // Update status display
+              updateUnityStatus();
+              
+              // Auto-enter fullscreen after Unity loads (permission already granted at this point)
+              enterFullscreenDirectly();
+            }, 2000); // Wait 2 seconds for Unity to be ready
             
           }).catch((message) => {
             console.error('Unity loading failed:', message);
