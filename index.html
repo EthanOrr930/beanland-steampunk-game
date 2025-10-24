@@ -255,6 +255,9 @@
       <p><strong>Controls:</strong></p>
       <p>• ← → Arrow keys: Tilt left/right</p>
       <p>• R key: Reset orientation</p>
+      <p><strong>Unity Status:</strong></p>
+      <p id="unity-status">Not loaded</p>
+      <button id="load-unity-btn" style="background: #d4af37; color: #000; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer; margin-top: 5px;">Load Unity</button>
     </div>
     
     <div id="gravity-indicator" class="gravity-indicator">
@@ -679,9 +682,9 @@
       var loaderUrl = buildUrl + "/BeanLandBuild.loader.js";
       var config = {
         arguments: [],
-        dataUrl: buildUrl + "/BeanLandBuild.data",
-        frameworkUrl: buildUrl + "/BeanLandBuild.framework.js",
-        codeUrl: buildUrl + "/BeanLandBuild.wasm",
+        dataUrl: buildUrl + "/BeanLandBuild.data.unityweb",
+        frameworkUrl: buildUrl + "/BeanLandBuild.framework.js.unityweb",
+        codeUrl: buildUrl + "/BeanLandBuild.wasm.unityweb",
         streamingAssetsUrl: "StreamingAssets",
         companyName: "Ethan Orr",
         productName: "BeanBox",
@@ -863,6 +866,9 @@
             // Initialize device controls after Unity loads
             initializeDeviceControls();
             
+            // Update status display
+            updateUnityStatus();
+            
             // Auto-enter fullscreen after Unity loads (permission already granted at this point)
             enterFullscreenDirectly();
             
@@ -982,6 +988,70 @@
         console.error('❌ Dev mode toggle not found');
       }
       
+      // Function to load Unity specifically for dev mode
+      function loadUnityForDevMode() {
+        console.log('🎮 Loading Unity for dev mode...');
+        
+        // Check if Unity loader is available
+        if (typeof createUnityInstance === 'function') {
+          console.log('✅ Unity loader found, creating instance...');
+          
+          // Show loading indicator
+          const loadingBar = document.getElementById('unity-loading-bar');
+          if (loadingBar) {
+            loadingBar.style.display = 'block';
+          }
+          
+          // Create Unity instance with dev mode configuration
+          createUnityInstance(canvas, config, (progress) => {
+            console.log('Unity loading progress:', progress);
+            const progressBar = document.getElementById('unity-progress-bar-full');
+            if (progressBar) {
+              progressBar.style.width = 100 * progress + "%";
+            }
+          }).then((unityInstance) => {
+            gameInstance = unityInstance;
+            console.log('✅ Unity instance created successfully for dev mode');
+            console.log('Unity instance methods available:', Object.keys(unityInstance));
+            
+            // Hide loading bar
+            if (loadingBar) {
+              loadingBar.style.display = 'none';
+            }
+            
+            // Send initial dev mode data to Unity
+            const gravityString = `${gravityVector.x},${gravityVector.y},${gravityVector.z}`;
+            gameInstance.SendMessage('Orientation Handler', 'SetMotionDataString', gravityString);
+            gameInstance.SendMessage('Orientation Handler', 'EnableMobileMode', 'true');
+            gameInstance.SendMessage('Orientation Handler', 'SetDevMode', 'true');
+            
+            // Update status display
+            updateUnityStatus();
+            
+            console.log('🎮 Dev mode Unity setup complete!');
+            
+          }).catch((message) => {
+            console.error('❌ Unity loading failed in dev mode:', message);
+            alert('Unity loading failed in dev mode: ' + message);
+          });
+        } else {
+          console.log('❌ Unity loader not found, trying to load script...');
+          
+          // Try to load the Unity loader script
+          var script = document.createElement("script");
+          script.src = loaderUrl;
+          script.onload = () => {
+            console.log('✅ Unity loader script loaded, retrying...');
+            loadUnityForDevMode(); // Retry after script loads
+          };
+          script.onerror = () => {
+            console.error('❌ Failed to load Unity loader script');
+            alert('Failed to load Unity. Make sure the Build folder contains the Unity files.');
+          };
+          document.body.appendChild(script);
+        }
+      }
+      
       // Function to manually start Unity if not loaded
       function tryStartUnity() {
         console.log('🎮 Attempting to start Unity manually...');
@@ -1047,6 +1117,9 @@
           get: function() { return 812; },
           configurable: true
         });
+        
+        // Update the isMobile variable for dev mode
+        window.isMobileDevMode = true;
         
         console.log('📱 Simulating mobile device');
         console.log('📱 User Agent:', navigator.userAgent);
@@ -1114,53 +1187,30 @@
           
           if (gameContainer) {
             gameContainer.classList.add('dev-mode-active');
+            gameContainer.style.display = 'block';
           }
           console.log('🔧 Dev Mode Activated - Phone simulator enabled');
           
           // Start sending simulated gyroscope data immediately
           startDevModeGyroscope();
           
-          // Force Unity to reload/restart with mobile detection
-          if (gameInstance && gameInstance.SendMessage) {
-            console.log('🎮 Sending initial gyroscope data to Unity');
+          // Load Unity if not already loaded
+          if (!gameInstance) {
+            console.log('🎮 Unity not loaded yet, starting Unity load...');
+            loadUnityForDevMode();
+          } else {
+            console.log('🎮 Unity already loaded, sending initial data...');
+            // Send initial gyroscope data to Unity
             const gravityString = `${gravityVector.x},${gravityVector.y},${gravityVector.z}`;
             gameInstance.SendMessage('Orientation Handler', 'SetMotionDataString', gravityString);
-            
-            // Try to trigger mobile mode in Unity
             gameInstance.SendMessage('Orientation Handler', 'EnableMobileMode', 'true');
             gameInstance.SendMessage('Orientation Handler', 'SetDevMode', 'true');
           }
           
-          // Don't refresh - let's debug what's happening
-          console.log('🔧 Mobile simulation applied, checking Unity state...');
-          
-          // Check if Unity is loaded
-          if (gameInstance) {
-            console.log('✅ Unity game instance found');
-          } else {
-            console.log('❌ Unity game instance not found - may need to wait for load');
-          }
-          
-          // Check Unity container visibility
-          const unityContainer = document.getElementById('unity-container');
-          if (unityContainer) {
-            console.log('✅ Unity container found');
-            console.log('📱 Unity container display:', getComputedStyle(unityContainer).display);
-            console.log('📱 Unity container visibility:', getComputedStyle(unityContainer).visibility);
-          } else {
-            console.log('❌ Unity container not found');
-          }
-          
-          // Check if Unity canvas exists
-          const unityCanvas = document.getElementById('unity-canvas');
-          if (unityCanvas) {
-            console.log('✅ Unity canvas found');
-            console.log('📱 Canvas size:', unityCanvas.width, 'x', unityCanvas.height);
-          } else {
-            console.log('❌ Unity canvas not found');
-          }
-          
           // Force Unity container to be visible immediately
+          const unityContainer = document.getElementById('unity-container');
+          const unityCanvas = document.getElementById('unity-canvas');
+          
           if (unityContainer) {
             unityContainer.style.display = 'block';
             unityContainer.style.visibility = 'visible';
@@ -1171,17 +1221,6 @@
             unityCanvas.style.visibility = 'visible';
             console.log('📱 Forced Unity canvas to be visible');
           }
-          
-          // Wait for Unity to load and then try to start it
-          setTimeout(() => {
-            console.log('🔧 Checking Unity load status...');
-            if (gameInstance) {
-              console.log('✅ Unity game instance now found!');
-            } else {
-              console.log('❌ Unity game instance still not found - trying to start Unity...');
-              tryStartUnity();
-            }
-          }, 2000);
         } else {
           if (gameContainer) {
             gameContainer.classList.remove('dev-mode-active');
@@ -1348,6 +1387,39 @@
         }
         console.log('📱 Dev mode gyroscope stopped');
       }
+      
+      // Update Unity status display
+      function updateUnityStatus() {
+        const statusElement = document.getElementById('unity-status');
+        const loadButton = document.getElementById('load-unity-btn');
+        
+        if (gameInstance) {
+          if (statusElement) statusElement.textContent = '✅ Loaded';
+          if (loadButton) loadButton.style.display = 'none';
+        } else {
+          if (statusElement) statusElement.textContent = '❌ Not loaded';
+          if (loadButton) loadButton.style.display = 'inline-block';
+        }
+      }
+      
+      // Set up manual Unity loading button
+      document.addEventListener('DOMContentLoaded', function() {
+        const loadButton = document.getElementById('load-unity-btn');
+        if (loadButton) {
+          loadButton.addEventListener('click', function() {
+            console.log('🎮 Manual Unity load requested');
+            if (!gameInstance) {
+              loadUnityForDevMode();
+            }
+          });
+        }
+        
+        // Update status initially
+        updateUnityStatus();
+        
+        // Update status periodically
+        setInterval(updateUnityStatus, 1000);
+      });
 
     </script>
   </body>
