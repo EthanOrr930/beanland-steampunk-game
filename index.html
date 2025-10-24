@@ -882,8 +882,33 @@
             
             // Wait a moment for Unity to fully initialize before sending messages
             setTimeout(() => {
+              // Force Unity container and canvas to be visible
+              const unityContainer = document.getElementById('unity-container');
+              const unityCanvas = document.getElementById('unity-canvas');
+              
+              if (unityContainer) {
+                unityContainer.style.display = 'block';
+                unityContainer.style.visibility = 'visible';
+                unityContainer.style.opacity = '1';
+                console.log('📱 Forced Unity container to be visible');
+              }
+              
+              if (unityCanvas) {
+                unityCanvas.style.display = 'block';
+                unityCanvas.style.visibility = 'visible';
+                unityCanvas.style.opacity = '1';
+                console.log('📱 Forced Unity canvas to be visible');
+              }
+              
               // Initialize device controls after Unity loads
               initializeDeviceControls();
+              
+              // Hide loading overlay
+              const mobilePermissionOverlay = document.getElementById('mobile-permission-overlay');
+              if (mobilePermissionOverlay) {
+                mobilePermissionOverlay.style.display = 'none';
+                console.log('📱 Hidden mobile permission overlay');
+              }
               
               // Update status display
               updateUnityStatus();
@@ -1053,6 +1078,24 @@
             // Hide loading bar
             if (loadingBar) {
               loadingBar.style.display = 'none';
+            }
+            
+            // Force Unity container and canvas to be visible
+            const unityContainer = document.getElementById('unity-container');
+            const unityCanvas = document.getElementById('unity-canvas');
+            
+            if (unityContainer) {
+              unityContainer.style.display = 'block';
+              unityContainer.style.visibility = 'visible';
+              unityContainer.style.opacity = '1';
+              console.log('📱 Forced Unity container to be visible in dev mode');
+            }
+            
+            if (unityCanvas) {
+              unityCanvas.style.display = 'block';
+              unityCanvas.style.visibility = 'visible';
+              unityCanvas.style.opacity = '1';
+              console.log('📱 Forced Unity canvas to be visible in dev mode');
             }
             
             // Send initial dev mode data to Unity
